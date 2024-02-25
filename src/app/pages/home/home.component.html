@@ -1,0 +1,28 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb m-3">
+        <li class="breadcrumb-item active">Home</li>
+    </ol>
+</nav>
+
+<div class="card" style="height: 100px">
+    <img 
+        src="https://media.istockphoto.com/id/1196537532/de/foto/verblassende-berglandschaft-des-himalaya.jpg?s=1024x1024&w=is&k=20&c=FTR2sESV8Sg6_jvZnztNTbjniOQODK_BK5NP1scxqCY=" 
+        class="card-img-bottom object-fit-cover" 
+        style="height: 100px; opacity: 0.5">
+</div>
+
+
+@for (tour of tours; track $index) {
+
+    <div class="card text-start mt-4" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">
+        <div class="card-header">
+            {{tour.name}}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{tour.name}}</h5>
+            <p class="card-text">{{tour.from}} bis {{tour.to}} </p>
+            <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
+        </div>
+    </div>
+
+}

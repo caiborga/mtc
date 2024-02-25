@@ -1,0 +1,134 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb m-3">
+        <li class="breadcrumb-item"><a [routerLink]="['/home']" routerLinkActive="router-link-active" >Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Mitbringsel</li>
+    </ol>
+</nav>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs mt-2">
+    <li [ngbNavItem]="0">
+        <button ngbNavLink>Nachrungsmittel</button>
+        <ng-template ngbNavContent>
+            <app-meal></app-meal>
+            <h2>Nahrungsmittel</h2>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <!-- <th scope="col">#</th> -->
+                        <th class="col-md-4">Name</th>
+                        <th class="col-md-4">Pro Kopf</th>
+                        <th class="col-md-4">Einheit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (thing of things; track thing.id) {
+                        @if (thing.category == 'food') {
+                            <tr>
+                                <!-- <th scope="row">1</th> -->
+                                <td>{{thing.name}}</td>
+                                <td>{{thing.perPerson}}</td>
+                                <td>{{thing.unit}}</td>
+                            </tr>
+                            }
+                        
+                    } @empty {
+                        Empty
+                    }
+                </tbody>
+            </table>
+        </ng-template>
+    </li>
+    <li [ngbNavItem]="1">
+        <button ngbNavLink>Verbrauchsmaterial</button>
+        <ng-template ngbNavContent>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <!-- <th scope="col">#</th> -->
+                        <th scope="col-md-4">Name</th>
+                        <th scope="col-md-4">Pro Kopf</th>
+                        <th scope="col-md-4">Einheit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (thing of things; track thing.id) {
+                        @if (thing.category == 'consumables') {
+                            <tr>
+                                <!-- <th scope="row">1</th> -->
+                                <td>{{thing.name}}</td>
+                                <td>{{thing.perPerson}}</td>
+                                <td>{{thing.unit}}</td>
+                            </tr>
+                            }
+                        
+                    } @empty {
+                        Empty
+                    }
+                </tbody>
+            </table>
+        </ng-template>
+    </li>
+    <li [ngbNavItem]="2">
+        <button ngbNavLink>Gegenstände</button>
+        <ng-template ngbNavContent>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <!-- <th scope="col">#</th> -->
+                        <th scope="col">Name</th>
+                        <th scope="col">Pro Kopf</th>
+                        <th scope="col">Einheit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (thing of things; track thing.id) {
+                        @if (thing.category == 'non-consumables') {
+                            <tr>
+                                <!-- <th scope="row">1</th> -->
+                                <td>{{thing.name}}</td>
+                                <td>{{thing.perPerson}}</td>
+                                <td>{{thing.unit}}</td>
+                            </tr>
+                            }
+                        
+                    } @empty {
+                        Empty
+                    }
+                </tbody>
+            </table>
+        </ng-template>
+    </li>
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+
+<button type="button" class="btn btn-primary" (click)="open(content)">Neu</button>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Neuer Gegenstand</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+		<form>
+			<div class="mb-3">
+				<div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                </div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+	</div>
+</ng-template>
