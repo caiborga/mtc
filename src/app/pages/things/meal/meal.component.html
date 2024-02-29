@@ -1,35 +1,46 @@
-<h2>Gerichte</h2>
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <!-- <th scope="col">#</th> -->
-            <th class="col-md-4">Name</th>
-            <th class="col-md-4">Zutaten</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (meal of meals; track meal.id) {
-
-            <tr>
-                <!-- <th scope="row">1</th> -->
-                <td>{{meal.name}}</td>
-                <td>
-                    @for (ingredient of meal.ingredients; track ingredient.id ) {
-                        <span class="badge text-bg-primary me-1 py-1">{{ingredient.quantity}} {{ingredient.unit.unit}} <b>{{ingredient.name}}</b> </span>
-                    }
-                </td>
-            </tr>
-
-            } @empty {
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h2>Gerichte</h2>
+        <button type="button" class="h-50 btn btn-primary mt-1" (click)="open(content)">Neues Gericht</button>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                    <td>Kein Eintrag</td>
-                    <td></td>
-                    <td></td>
+                    <!-- <th scope="col">#</th> -->
+                    <th class="col-md-4">Name</th>
+                    <th class="col-md-4">Personen</th>
+                    <th class="col-md-4">Zutaten</th>
                 </tr>
-            }
-    </tbody>
-    <button type="button" class="btn btn-primary mt-3" (click)="open(content)">Neues Gericht</button>
-</table>
+            </thead>
+            <tbody>
+                @for (meal of meals; track meal.id) {
+        
+                    <tr>
+                        <!-- <th scope="row">1</th> -->
+                        <td>{{meal.name}}</td>
+                        <td>{{meal.persons}}</td>
+                        <td>
+                            @for (ingredient of meal.ingredients; track ingredient.id ) {
+                                <span class="badge text-bg-primary me-1 py-1">{{ingredient.quantity}} {{ingredient.unit.unit}} <b>{{ingredient.name}}</b> </span>
+                            }
+                        </td>
+                    </tr>
+        
+                    } @empty {
+                        <tr>
+                            <td>Kein Eintrag</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+            </tbody>
+            
+        </table>
+    </div>
+    
+</div>
+
 
 <!-- MEAL MODAL -->
 <ng-template #content let-mealModal>
@@ -70,7 +81,7 @@
                 >
 
                 @if (mealIngredients.length >= 0) {
-                    <table class="table m-0">
+                    <table class="table m-0 mt-1">
                         <thead>
                             <tr>
                                 <th class="col-md-4">Name</th>
