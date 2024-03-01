@@ -1,23 +1,8 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { TourService } from '../../services/tour.service';
 
-const tourenArray = [
-    {
-        id: 1,
-        name: 'Bichlhütte',
-        from: '01.01.2023',
-        participants: [ 'Sören', 'Sybille', 'Thomas'],
-        to: '03.01.2023',
-    },
-    {
-        id: 2,
-        name: 'Almhüte',
-        participants: [ 'Ruth', 'Megan', 'Oliver'],
-        from: '01.04.2023',
-        to: '04.04.2023',
-    }
-]
 
 @Component({
     selector: 'app-home',
@@ -29,6 +14,8 @@ const tourenArray = [
 export class HomeComponent {
     tours: Array<any> = [];
 
+    constructor(private tourService: TourService) { }
+
     tourForm = new FormGroup({
         name: new FormControl(''),
         from: new FormControl<Date | null>(null),
@@ -37,7 +24,25 @@ export class HomeComponent {
     });
 
     ngOnInit() {
-        this.tours = tourenArray;
+        this.tourService.get()
+        .toPromise()
+        .then((response) => {
+          // Daten erfolgreich abgerufen
+          this.tours = response;
+          console.log('Daten abgerufen:', this.tours);
+  
+          // Fügen Sie hier weiteren Code hinzu, der auf die abgerufenen Daten zugreift.
+          this.weitererCode();
+        })
+        .catch((error) => {
+          // Fehler bei der Anfrage
+          console.error('Fehler beim Abrufen der Daten:', error);
+        });
+    }
+  
+    weitererCode(): void {
+      // Ihr weiterer Code, der auf die abgerufenen Daten zugreift
+      console.log('Weiterer Code, der auf die Daten zugreift:', this.tours);
     }
 
     newTour() {
