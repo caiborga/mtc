@@ -1,0 +1,83 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <h2>{{title}}</h2>
+        <button type="button" class="h-50 btn btn-primary mt-1" (click)="open(content)">Hinzufügen</button>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th class="col-md-3">Name</th>
+                    <th class="col-md-3">Pro Kopf</th>
+                    <th class="col-md-3">Einheit</th>
+                    <th class="col-md-3">Gewicht</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for (thing of things; track thing) {
+                    @if (thing.category == category) {
+                        <tr>
+                            <!-- <th scope="row">1</th> -->
+                            <td>{{thing.name}}</td>
+                            <td>{{thing.perPerson}}</td>
+                            <td>{{thing.unit}}</td>
+                            <td>{{thing.weight}}</td>
+                        </tr>
+                        }
+                    
+                } @empty {
+                    Empty
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Neuer Gegenstand</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+        <form [formGroup]="thingForm">
+			<div class="mb-3">
+				<div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm" >Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="name">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Pro Kopf</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="perPerson">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Kategorie</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="category">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Einheit</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="unit">
+                </div>
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Gewicht</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="weight">
+                </div>
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-outline-dark" (click)="newThing(); modal.close('Save click')">Save</button>
+	</div>
+</ng-template>

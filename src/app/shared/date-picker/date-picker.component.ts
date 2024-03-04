@@ -12,8 +12,8 @@ import { JsonPipe } from '@angular/common';
 })
 export class DatePickerComponent {
 
-    @Output() fromDatePicked = new EventEmitter<Date | null>();
-    @Output() toDatePicked = new EventEmitter<Date | null>();
+    @Output() startDatePicked = new EventEmitter<Date | null>();
+    @Output() endDatePicked = new EventEmitter<Date | null>();
 
     calendar = inject(NgbCalendar);
 	formatter = inject(NgbDateParserFormatter);
@@ -24,24 +24,24 @@ export class DatePickerComponent {
 
 	ngOnInit() {
 		let today = new Date()
-		this.fromDatePicked.emit(today)
-		this.toDatePicked.emit(today)
+		this.startDatePicked.emit(today)
+		this.endDatePicked.emit(today)
 	}
 
 	onDateSelection(date: NgbDate) {
 		if (!this.fromDate && !this.toDate) {
 			this.fromDate = date;
 			const fromDatePicked = new Date(date.year, date.month - 1, date.day);
-			this.fromDatePicked.emit(fromDatePicked)
+			this.startDatePicked.emit(fromDatePicked)
 		} else if (this.fromDate && !this.toDate && date && date.after(this.fromDate)) {
 			this.toDate = date;
 			const toDatePicked = new Date(date.year, date.month - 1, date.day);
-			this.toDatePicked.emit(toDatePicked)
+			this.endDatePicked.emit(toDatePicked)
 		} else {
 			this.toDate = null;
 			this.fromDate = date;
 			const fromDatePicked = new Date(date.year, date.month - 1, date.day);
-			this.fromDatePicked.emit(fromDatePicked)
+			this.startDatePicked.emit(fromDatePicked)
 		}
 	}
 

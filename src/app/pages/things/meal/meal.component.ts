@@ -69,7 +69,7 @@ export class MealComponent {
 	newIngredient: NewIngredient = {
 		name: '',
 		unit: '',
-		quantity: 0
+		quantity: 0,
 	}
 
     private modalService = inject(NgbModal);

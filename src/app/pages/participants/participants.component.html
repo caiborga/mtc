@@ -1,0 +1,60 @@
+
+    
+<div class="card">
+<div class="card-header d-flex justify-content-between">
+    <h2>Teilnehmer</h2>
+    <button type="button" class="h-50 btn btn-primary mt-1" (click)="open(participantModal)">Hinzufügen</button>
+</div>
+
+@if(!loadingData) {
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th class="col-md-4">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (participant of participants; track participant) {
+                    <tr>
+                        <!-- <th scope="row">1</th> -->
+                        <td>{{participant.name}}</td>
+                        <button type="button" class="btn btn-danger" (click)="deleteParticipant(participant.id)">Löschen</button>
+                        <button type="button" class="btn btn-success" (click)="initializeModal(participant.id)">Editieren</button>
+                    </tr>
+                } @empty {
+                    Empty
+                }
+            </tbody>
+        </table>
+    </div>
+}@else{
+    <div class="card-body">
+        <div class="spinner-grow" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+}
+
+<ng-template #participantModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Neuer Teilnehmer</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="participantForm">
+            <div class="mb-3">
+                <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="name">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="addParticipant(); modal.close('Save click')">Save</button>
+    </div>
+</ng-template>

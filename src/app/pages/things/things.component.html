@@ -13,137 +13,38 @@
         </ng-template>
     </li>
     <li [ngbNavItem]="1">
-        <button ngbNavLink>Nachrungsmittel</button>
+        <button ngbNavLink>Nahrungsmittel</button>
         <ng-template ngbNavContent>
-            
-            <div class="card">
-                <div class="card-header d-flex justify-content-between">
-                    <h2>Nahrungsmittel</h2>
-                    <button type="button" class="h-50 btn btn-primary mt-1" (click)="open(content)">Hinzufügen</button>
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <!-- <th scope="col">#</th> -->
-                                <th class="col-md-4">Name</th>
-                                <th class="col-md-4">Pro Kopf</th>
-                                <th class="col-md-4">Einheit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (thing of things; track thing.id) {
-                                @if (thing.category == 'food') {
-                                    <tr>
-                                        <!-- <th scope="row">1</th> -->
-                                        <td>{{thing.name}}</td>
-                                        <td>{{thing.perPerson}}</td>
-                                        <td>{{thing.unit}}</td>
-                                    </tr>
-                                    }
-                                
-                            } @empty {
-                                Empty
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                
-            </div>
-            
+            <app-thing 
+                [category]="'food'"
+                [things]="things"
+                [title]="'Nahrungsmittel'"
+                >
+            </app-thing>
         </ng-template>
     </li>
     <li [ngbNavItem]="2">
         <button ngbNavLink>Verbrauchsmaterial</button>
         <ng-template ngbNavContent>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <!-- <th scope="col">#</th> -->
-                        <th scope="col-md-4">Name</th>
-                        <th scope="col-md-4">Pro Kopf</th>
-                        <th scope="col-md-4">Einheit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (thing of things; track thing.id) {
-                        @if (thing.category == 'consumables') {
-                            <tr>
-                                <!-- <th scope="row">1</th> -->
-                                <td>{{thing.name}}</td>
-                                <td>{{thing.perPerson}}</td>
-                                <td>{{thing.unit}}</td>
-                            </tr>
-                            }
-                        
-                    } @empty {
-                        Empty
-                    }
-                </tbody>
-            </table>
+            <app-thing 
+                [category]="'consumables'"
+                [things]="things"
+                [title]="'Verbrauchsmaterial'"
+                >
+            </app-thing>
         </ng-template>
     </li>
     <li [ngbNavItem]="3">
         <button ngbNavLink>Gegenstände</button>
         <ng-template ngbNavContent>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <!-- <th scope="col">#</th> -->
-                        <th scope="col">Name</th>
-                        <th scope="col">Pro Kopf</th>
-                        <th scope="col">Einheit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (thing of things; track thing.id) {
-                        @if (thing.category == 'non-consumables') {
-                            <tr>
-                                <!-- <th scope="row">1</th> -->
-                                <td>{{thing.name}}</td>
-                                <td>{{thing.perPerson}}</td>
-                                <td>{{thing.unit}}</td>
-                            </tr>
-                            }
-                        
-                    } @empty {
-                        Empty
-                    }
-                </tbody>
-            </table>
+            <app-thing 
+                [category]="'non-consumables'"
+                [things]="things"
+                [title]="'Gegenstände'"
+                >
+            </app-thing>
         </ng-template>
     </li>
 </ul>
 
 <div [ngbNavOutlet]="nav" class="mt-2"></div>
-
-
-
-
-<ng-template #content let-modal>
-	<div class="modal-header">
-		<h4 class="modal-title" id="modal-basic-title">Neuer Gegenstand</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-	</div>
-	<div class="modal-body">
-		<form>
-			<div class="mb-3">
-				<div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-                </div>
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
-                </div>
-			</div>
-		</form>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
-	</div>
-</ng-template>

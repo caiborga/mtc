@@ -2,11 +2,7 @@
     <ol class="breadcrumb m-3">
         <li class="breadcrumb-item active">Home</li>
     </ol>
-</nav>
-
-<div class="card" style="height: 100px">
-
-</div>
+</nav>  
 
 
 @for (tour of tours; track $index) {
@@ -21,5 +17,50 @@
             <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
         </div>
     </div>
-
 }
+
+<button type="button" class="btn btn-primary" (click)="open(tourModal)">Neue Tour</button>
+
+
+<ng-template #tourModal let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Neue Tour</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+        <form [formGroup]="tourForm">
+			<div class="mb-3">
+				<div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                </div>
+                <app-date-picker 
+                    (startDatePicked)="this.tourForm.get('start')!.setValue($event)"
+                    (endDatePicked)="this.tourForm.get('end')!.setValue($event)"
+                ></app-date-picker>
+                <input
+                id="typeahead-prevent-manual-entry"
+                type="text"
+                placeholder="Suchen.."
+                class="form-control"
+                [(ngModel)]="newParticipant"
+                [ngModelOptions]="{standalone: true}"
+                [ngbTypeahead]="search"
+                [inputFormatter]="formatter"
+                [resultFormatter]="formatter"
+                [editable]="false"
+            />
+			</div>
+            <span class="badge text-bg-primary me-1 py-1">Test</span>
+
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-outline-dark" (click)="newTour(); modal.close('Save click')">Speichern</button>
+	</div>
+
+    
+
+</ng-template>
