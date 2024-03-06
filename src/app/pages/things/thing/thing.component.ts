@@ -3,18 +3,20 @@ import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angul
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Thing } from '../things.component';
 import { TourService } from '../../../services/tour.service';
+import { UnitPickerComponent } from '../../../shared/unit-picker/unit-picker.component';
+import { CategoryData } from '../things.component';
 
 @Component({
   selector: 'app-thing',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, UnitPickerComponent],
   templateUrl: './thing.component.html',
   styleUrl: './thing.component.css'
 })
+
 export class ThingComponent {
-    @Input() category: string = ''
-    @Input() things: Thing[] = []
-    @Input() title: string = ''
+    
+    @Input() data: CategoryData;
 
     thingForm = new FormGroup({
         category: new FormControl(''),
@@ -24,9 +26,28 @@ export class ThingComponent {
         weight: new FormControl(0),
     });
 
+    private modalService = inject(NgbModal);
+	closeResult = '';
+
     constructor(
         private tourService: TourService
-    ) {}
+    ) {
+        this.data = {
+            category: '',
+            relevantColumns: {
+                name: true,
+                perPerson: true,
+                unit: true,
+                weight: true,
+            },
+            things: [],
+            title: '',
+        }
+    }
+
+    ngOnInit() {
+        this.thingForm.get('category')!.setValue(this.data.category)
+    }
 
     private getDismissReason(reason: any): string {
         switch (reason) {
@@ -38,9 +59,6 @@ export class ThingComponent {
                 return `with: ${reason}`;
         }
     }
-
-    private modalService = inject(NgbModal);
-	closeResult = '';
 
     open(content: TemplateRef<any>) {
 		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
@@ -54,6 +72,7 @@ export class ThingComponent {
 	}
 
     newThing() {
+        console.log("thingForm", this.thingForm)
         this.tourService.post('things', this.thingForm.value)
         .toPromise()
         .then((response) => {

@@ -88,7 +88,6 @@
                                 <th class="col-md-4">Menge</th>
                                 <th class="col-md-4">Einheit</th>
                                 <th class="col-md-4">Gewicht</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -125,18 +124,17 @@
                     [ngModelOptions]="{standalone: true}"
                 >
 
-                <input
-                    id="typeahead-prevent-manual-entry"
-                    type="text"
-                    placeholder="Suchen.."
-                    class="form-control"
-                    [(ngModel)]="newIngredient.unit"
+                <app-unit-picker (unitOutput)="setUnit($event)"></app-unit-picker>
+
+                <input 
+                    type="number"
+                    class="form-control" 
+                    placeholder="Gewicht" 
+                    aria-label="Recipient's username" 
+                    aria-describedby="basic-addon2"
+                    [(ngModel)]="newIngredient.weight"
                     [ngModelOptions]="{standalone: true}"
-                    [ngbTypeahead]="search"
-                    [inputFormatter]="formatter"
-                    [resultFormatter]="formatter"
-                    [editable]="false"
-                />
+                >
             </div>
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button" (click)="addMealIngrident()">Hinzufügen</button>

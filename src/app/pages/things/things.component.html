@@ -16,9 +16,7 @@
         <button ngbNavLink>Nahrungsmittel</button>
         <ng-template ngbNavContent>
             <app-thing 
-                [category]="'food'"
-                [things]="things"
-                [title]="'Nahrungsmittel'"
+                [data]="categories[0]"
                 >
             </app-thing>
         </ng-template>
@@ -27,9 +25,7 @@
         <button ngbNavLink>Verbrauchsmaterial</button>
         <ng-template ngbNavContent>
             <app-thing 
-                [category]="'consumables'"
-                [things]="things"
-                [title]="'Verbrauchsmaterial'"
+                [data]="categories[1]"
                 >
             </app-thing>
         </ng-template>
@@ -38,9 +34,7 @@
         <button ngbNavLink>Gegenstände</button>
         <ng-template ngbNavContent>
             <app-thing 
-                [category]="'non-consumables'"
-                [things]="things"
-                [title]="'Gegenstände'"
+                [data]="categories[2]"
                 >
             </app-thing>
         </ng-template>

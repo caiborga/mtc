@@ -1,0 +1,13 @@
+<input
+    class="form-control"
+    id="typeahead-prevent-manual-entry"
+    type="text"
+    (change)="setUnit()"
+    [editable]="false"
+    [inputFormatter]="formatter"
+    [ngbTypeahead]="search"
+    [ngModelOptions]="{standalone: true}"
+    [placeholder]="unitInput"
+    [resultFormatter]="formatter"
+    [(ngModel)]="selectedUnit"
+/>

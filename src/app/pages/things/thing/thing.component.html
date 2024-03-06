@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between">
-        <h2>{{title}}</h2>
+        <h2>{{data.title}}</h2>
         <button type="button" class="h-50 btn btn-primary mt-1" (click)="open(content)">Hinzufügen</button>
     </div>
     <div class="card-body">
@@ -8,22 +8,21 @@
             <thead>
                 <tr>
                     <!-- <th scope="col">#</th> -->
-                    <th class="col-md-3">Name</th>
-                    <th class="col-md-3">Pro Kopf</th>
-                    <th class="col-md-3">Einheit</th>
-                    <th class="col-md-3">Gewicht</th>
+                    @if (data.relevantColumns.name){<th class="col-md-3">Name</th>}
+                    @if (data.relevantColumns.perPerson){<th class="col-md-3">Pro Kopf</th>}
+                    @if (data.relevantColumns.unit){<th class="col-md-3">Einheit</th>}
+                    @if (data.relevantColumns.weight){<th class="col-md-3">Gewicht</th>}
 
                 </tr>
             </thead>
             <tbody>
-                @for (thing of things; track thing) {
-                    @if (thing.category == category) {
+                @for (thing of data.things; track thing) {
+                    @if (thing.category == data.category) {
                         <tr>
-                            <!-- <th scope="row">1</th> -->
-                            <td>{{thing.name}}</td>
-                            <td>{{thing.perPerson}}</td>
-                            <td>{{thing.unit}}</td>
-                            <td>{{thing.weight}}</td>
+                            @if (data.relevantColumns.name){<td>{{thing.name}}</td>}
+                            @if (data.relevantColumns.perPerson){<td>{{thing.perPerson}}</td>}
+                            @if (data.relevantColumns.unit){<td>{{thing.unit}}</td>}
+                            @if (data.relevantColumns.weight){<td>{{thing.weight}}</td>}
                         </tr>
                         }
                     
@@ -58,15 +57,9 @@
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Kategorie</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="category">
-                </div>
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">Einheit</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="unit">
+                    <app-unit-picker (unitOutput)="this.thingForm.controls['unit'].setValue($event);"></app-unit-picker>
                 </div>
                 <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">

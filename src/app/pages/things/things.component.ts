@@ -6,47 +6,7 @@ import { RouterLink } from '@angular/router';
 
 import { MealComponent } from './meal/meal.component';
 import { ThingComponent } from './thing/thing.component';
-
-const things = [
-    {
-        name: 'Nudeln',
-        category: 'food',
-        perPerson: 167,
-        unit: 'g',
-        weight: 0
-    },
-    {
-        name: 'Reis',
-        category: 'food',
-        perPerson: 100,
-        unit: 'g',
-        weight: 0
-
-    },
-    {
-        name: 'Joghurt',
-        category: 'food',
-        perPerson: 66.66,
-        unit: 'g',
-        weight: 0
-
-    },
-    {
-        name: 'Bose Box',
-        category: 'non-consumables',
-        perPerson: 680,
-        unit: 'g',
-        weight: 0
-
-    },
-    {
-        name: 'Klopapier',
-        category: 'consumables',
-        perPerson: 0.33,
-        unit: 'Rolle',
-        weight: 0
-    },
-]
+import { TourService } from '../../services/tour.service';
 
 export interface Thing {
     category: string,
@@ -54,6 +14,18 @@ export interface Thing {
     perPerson: Number,
     unit: string,
     weight: Number,
+}
+
+export interface CategoryData {
+    category: string,
+    relevantColumns: {
+        name: boolean,
+        perPerson: boolean,
+        unit: boolean,
+        weight: boolean,
+    }
+    things: Thing[],
+    title: string,
 }
 
 @Component({
@@ -68,13 +40,76 @@ export interface Thing {
     templateUrl: './things.component.html',
     styleUrl: './things.component.css'
 })
+
 export class ThingsComponent {
     activeTab = 0   ;
-    things: Thing[] = things
+    things: Thing[] = []
     participantForm = new FormGroup({
         arrival: new FormControl<Date | ''>(''),
         departure: new FormControl<Date | ''>(''),
         name: new FormControl(''),
         things: new FormControl(''),
     });
+
+    categories: CategoryData[] = [];
+
+    constructor(
+        private tourService: TourService
+    ) {}
+
+    ngOnInit(){
+        this.loadThings()
+    }
+
+    loadThings(){
+        this.tourService.get('things')
+        .toPromise()
+        .then((response) => {
+            this.things = response.things
+            this.defineCategories()
+            console.log('getThings - success', response);
+        })
+        .catch((error) => {
+            console.error('getThings - error', error);
+        });
+    }
+
+    defineCategories(){
+        const Food : CategoryData = {
+            category: 'food',
+            relevantColumns: {
+                name: true,
+                perPerson: true,
+                unit: true,
+                weight: true,
+            },
+            things: this.things,
+            title: 'Nahrungsmittel',
+        }
+        const Consumables : CategoryData = {
+            category: 'consumables',
+            relevantColumns: {
+                name: true,
+                perPerson: true,
+                unit: true,
+                weight: true,
+            },
+            things: this.things,
+            title: 'Verbrauchsmaterial',
+        }
+        const Items : CategoryData = {
+            category: 'items',
+            relevantColumns: {
+                name: true,
+                perPerson: false,
+                unit: false,
+                weight: true,
+            },
+            things: this.things,
+            title: 'Gegenstände',
+        }
+        this.categories.push(Food)
+        this.categories.push(Consumables)
+        this.categories.push(Items)
+    }
 }

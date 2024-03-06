@@ -1,27 +1,22 @@
 import { Component, inject, TemplateRef } from '@angular/core';
-import { CommonModule } from "@angular/common"
-
+import { CommonModule } from '@angular/common';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-
-import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, OperatorFunction } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
-
-import { foodUnits } from '../../../models/units';
+import { UnitPickerComponent } from '../../../shared/unit-picker/unit-picker.component';
 
 interface NewIngredient {
-	name: string;
+	name: string,
 	unit: string,
-	quantity: number;
+	quantity: number,
+	weight: number,
 }
 
 @Component({
     selector: 'app-meal',
     standalone: true,
-    imports: [CommonModule, FormsModule, NgbNavModule, NgbTypeaheadModule, ReactiveFormsModule],
+    imports: [CommonModule, FormsModule, NgbNavModule, ReactiveFormsModule, UnitPickerComponent],
     templateUrl: './meal.component.html',
     styleUrl: './meal.component.css'
 })
@@ -70,6 +65,7 @@ export class MealComponent {
 		name: '',
 		unit: '',
 		quantity: 0,
+		weight: 0,
 	}
 
     private modalService = inject(NgbModal);
@@ -132,13 +128,9 @@ export class MealComponent {
 
 	}
 
-	search: OperatorFunction<string, readonly { unit: string }[]> = (text$: Observable<string>) =>
-		text$.pipe(
-			debounceTime(200),
-			distinctUntilChanged(),
-			filter((term) => term.length >= 1),
-			map((term) => foodUnits.filter((units) => new RegExp(term, 'mi').test(units.unit)).slice(0, 10)),
-		);
-		
-	formatter = (x: { unit: string }) => x.unit;
+	setUnit(unit: string){
+		this.newIngredient.unit = unit
+	}
+
+	
 }
