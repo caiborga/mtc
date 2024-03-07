@@ -1,7 +1,7 @@
 import { Component, inject, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TourService } from '../../services/tour.service';
@@ -66,12 +66,11 @@ export class HomeComponent {
         this.tourService.get('tours')
         .toPromise()
         .then((response) => {
-          this.tours = response.tours;
-          console.log('Daten abgerufen:', this.tours);
-  
+            this.tours = response.tours;
+            console.log('Daten abgerufen:', this.tours);
         })
         .catch((error) => {
-          console.error('Fehler beim Abrufen der Daten:', error);
+            console.error('Fehler beim Abrufen der Daten:', error);
         });
     }
 
@@ -85,10 +84,10 @@ export class HomeComponent {
             //     var name = participants[i].name;
             //     this.participantsMap[name] = participants[i];
             // }
-  
+
         })
         .catch((error) => {
-          console.error('getParticipants - error', error);
+            console.error('getParticipants - error', error);
         });
     }
 
@@ -96,11 +95,11 @@ export class HomeComponent {
         console.log("tourForm", this.tourForm.value)
         this.tourService.post('tours', this.tourForm)
         .toPromise()
-        .then((response) => {          
-            console.log('Daten abgerufen:', response);
+        .then((response) => {
+            console.log('newTour - success', response);
         })
         .catch((error) => {
-            console.error('Fehler beim Abrufen der Daten:', error);
+            console.error('newTour - error', error);
         });
         console.log("tours", this.tours)
     }
