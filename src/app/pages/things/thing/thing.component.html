@@ -12,6 +12,7 @@
                     @if (data.relevantColumns.perPerson){<th class="col-md-3">Pro Kopf</th>}
                     @if (data.relevantColumns.unit){<th class="col-md-3">Einheit</th>}
                     @if (data.relevantColumns.weight){<th class="col-md-3">Gewicht</th>}
+                    <th></th>
 
                 </tr>
             </thead>
@@ -21,8 +22,12 @@
                         <tr>
                             @if (data.relevantColumns.name){<td>{{thing.name}}</td>}
                             @if (data.relevantColumns.perPerson){<td>{{thing.perPerson}}</td>}
-                            @if (data.relevantColumns.unit){<td>{{thing.unit}}</td>}
+                            @if (data.relevantColumns.unit){<td>{{ foodUnits[thing.unitID].unit }}</td>}
                             @if (data.relevantColumns.weight){<td>{{thing.weight}}</td>}
+                            <td class="d-flex justify-content-end">
+                                <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="initializeModal(thing.id); open(content)"></i>
+                                <i class="bi bi-trash text-danger" style="cursor: pointer;" (click)="deleteThing(thing.id)"></i>
+                            </td>
                         </tr>
                         }
                     
@@ -32,7 +37,6 @@
             </tbody>
         </table>
     </div>
-    
 </div>
 
 <ng-template #content let-modal>
@@ -43,34 +47,57 @@
 	<div class="modal-body">
         <form [formGroup]="thingForm">
 			<div class="mb-3">
-				<div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm" >Name</span>
+                @if (data.relevantColumns.name) {
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                        <label for="floatingInput">Name</label>
                     </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="name">
-                </div>
-                <div class="input-group input-group-sm mb-3">
+                }
+				<!-- <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Pro Kopf</span>
+                        <span class="input-group-text" id="inputGroup-sizing-sm" formControlName="name">Name</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="perPerson">
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" >
+                </div> -->
+                <div class="row">
+                    @if (data.relevantColumns.perPerson) {
+                        <div class="form-floating mb-3 col-6">
+                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson">
+                            <label for="floatingInput">Verbrauch pro Kopf pro Tag</label>
+                        </div>
+                    }
+                    <!-- <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm" formControlName="perPerson">Pro Kopf</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" >
+                    </div> -->
+                    @if (data.relevantColumns.unit) {
+                        <div class="mb-3 col-6">
+                            <app-unit-picker 
+                                (unitOutput)="thingForm.controls['unitID'].setValue($event);" 
+                                [unitInput]="thingForm.controls['unitID'].value!">
+                            </app-unit-picker>
+                        </div>
+                    }
                 </div>
-                <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Einheit</span>
-                    </div>
-                    <app-unit-picker (unitOutput)="this.thingForm.controls['unit'].setValue($event);"></app-unit-picker>
-                </div>
-                <div class="input-group input-group-sm mb-3">
+                <!-- <div class="input-group input-group-sm mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">Gewicht</span>
                     </div>
                     <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="weight">
-                </div>
+                </div> -->
+                @if (data.relevantColumns.weight) {
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="weight">
+                        <label for="floatingInput">Gewicht</label>
+                    </div>
+                }
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		<button type="button" class="btn btn-outline-dark" (click)="newThing(); modal.close('Save click')">Save</button>
+		@if(selectedThingID == -1){<button type="button" class="btn btn-outline-dark" (click)="newThing(); modal.close('Save click'); initializeModal()">Speichern</button>}
+        @if(selectedThingID != -1){<button type="button" class="btn btn-outline-dark" (click)="editThing(0); modal.close('Edit click'); initializeModal()">Ändern</button>}
 	</div>
 </ng-template>

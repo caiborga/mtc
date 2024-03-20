@@ -8,7 +8,7 @@ import { UnitPickerComponent } from '../../../shared/unit-picker/unit-picker.com
 
 interface NewIngredient {
 	name: string,
-	unit: string,
+	unit: number,
 	quantity: number,
 	weight: number,
 }
@@ -63,7 +63,7 @@ export class MealComponent {
 
 	newIngredient: NewIngredient = {
 		name: '',
-		unit: '',
+		unit: 0,
 		quantity: 0,
 		weight: 0,
 	}
@@ -111,7 +111,7 @@ export class MealComponent {
 		}
 		this.newIngredient.name = ''
 		this.newIngredient.quantity = 0
-		this.newIngredient.unit = ''
+		this.newIngredient.unit = 0
 
 		this.mealIngredients.push(temp)
 	}
@@ -128,7 +128,7 @@ export class MealComponent {
 
 	}
 
-	setUnit(unit: string){
+	setUnit(unit: number){
 		this.newIngredient.unit = unit
 	}
 

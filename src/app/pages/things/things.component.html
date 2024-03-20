@@ -17,6 +17,7 @@
         <ng-template ngbNavContent>
             <app-thing 
                 [data]="categories[0]"
+                (reloadData)="loadThings()"
                 >
             </app-thing>
         </ng-template>
@@ -26,6 +27,7 @@
         <ng-template ngbNavContent>
             <app-thing 
                 [data]="categories[1]"
+                (reloadData)="loadThings()"
                 >
             </app-thing>
         </ng-template>
@@ -35,6 +37,7 @@
         <ng-template ngbNavContent>
             <app-thing 
                 [data]="categories[2]"
+                (reloadData)="loadThings()"
                 >
             </app-thing>
         </ng-template>

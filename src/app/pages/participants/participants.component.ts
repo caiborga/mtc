@@ -4,18 +4,22 @@ import { FormsModule, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TourService } from '../../services/tour.service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { MessageBoxComponent } from '../../shared/message-box/message-box.component';
+import { RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-participants',
     standalone: true,
-    imports: [FormsModule,ReactiveFormsModule],
+    imports: [FormsModule, MessageBoxComponent, ReactiveFormsModule, RouterLink],
     templateUrl: './participants.component.html',
     styleUrl: './participants.component.css'
 })
 export class ParticipantsComponent {
 
     @ViewChild('participantModal') myModal: any;
+    @ViewChild(MessageBoxComponent) meesageBox!: MessageBoxComponent
+
 
     loadingData: boolean = false;
 
@@ -24,11 +28,13 @@ export class ParticipantsComponent {
     participantForm = new FormGroup({
         arrival: new FormControl<Date | ''>(''),
         departure: new FormControl<Date | ''>(''),
+        id: new FormControl(''),
         name: new FormControl(''),
         things: new FormControl(''),
     });
 
     constructor(
+        private route: ActivatedRoute, 
         private tourService: TourService
     ) {}
 
@@ -68,9 +74,12 @@ export class ParticipantsComponent {
         let values = {
             arrival: participantsMap[participantID]['arrival'],
             departure: participantsMap[participantID]['departure'],
+            id: participantID,
             name: participantsMap[participantID]['name'],
             things: participantsMap[participantID]['burdens'],
         }
+
+        
 
         this.participantForm.setValue(values)
 
@@ -108,9 +117,9 @@ export class ParticipantsComponent {
         });
     }
 
-    editParticipant(participantID: string) {
+    editParticipant() {
         console.log(this.participantForm)
-        this.tourService.put('participants/' + participantID, this.participantForm.value)
+        this.tourService.put('participants/' + this.participantForm.get('id')!.value, this.participantForm.value)
         .toPromise()
         .then((response) => {
             this.participants = response;
@@ -134,5 +143,4 @@ export class ParticipantsComponent {
             console.error('Add participant - error', error);
         });
     }
-
 }

@@ -9,10 +9,11 @@ import { ThingComponent } from './thing/thing.component';
 import { TourService } from '../../services/tour.service';
 
 export interface Thing {
+    id: number,
     category: string,
     name: string,
     perPerson: Number,
-    unit: string,
+    unitID: number,
     weight: Number,
 }
 
@@ -68,6 +69,7 @@ export class ThingsComponent {
             this.things = response.things
             this.defineCategories()
             console.log('getThings - success', response);
+            console.log('this.things', this.things);
         })
         .catch((error) => {
             console.error('getThings - error', error);
@@ -75,6 +77,7 @@ export class ThingsComponent {
     }
 
     defineCategories(){
+        this.categories = [];
         const Food : CategoryData = {
             category: 'food',
             relevantColumns: {

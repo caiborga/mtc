@@ -1,10 +1,11 @@
-import { Component, inject, Input, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, TemplateRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Thing } from '../things.component';
+
 import { TourService } from '../../../services/tour.service';
 import { UnitPickerComponent } from '../../../shared/unit-picker/unit-picker.component';
 import { CategoryData } from '../things.component';
+import { foodUnits, Unit } from '../../../models/units';
 
 @Component({
   selector: 'app-thing',
@@ -14,21 +15,27 @@ import { CategoryData } from '../things.component';
   styleUrl: './thing.component.css'
 })
 
-export class ThingComponent {
+export class ThingComponent implements OnChanges{
     
     @Input() data: CategoryData;
+    @Output() reloadData = new EventEmitter();
 
+    closeResult = '';
     thingForm = new FormGroup({
         category: new FormControl(''),
         name: new FormControl(''),
-        perPerson: new FormControl(0), 
-        unit: new FormControl(''),
-        weight: new FormControl(0),
+        perPerson: new FormControl(null), 
+        unitID: new FormControl(0),
+        weight: new FormControl(null),
     });
 
-    private modalService = inject(NgbModal);
-	closeResult = '';
+    
+    selectedThingID: number = -1;
+    thingsMap: any;
+    foodUnits: any;
 
+    private modalService = inject(NgbModal);
+	
     constructor(
         private tourService: TourService
     ) {
@@ -46,7 +53,15 @@ export class ThingComponent {
     }
 
     ngOnInit() {
+        this.foodUnits = foodUnits
         this.thingForm.get('category')!.setValue(this.data.category)
+        this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        console.log('ngOnChanges:', changes['data'].currentValue);
+        this.data = changes['data'].currentValue
+        this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
     }
 
     private getDismissReason(reason: any): string {
@@ -76,6 +91,7 @@ export class ThingComponent {
         this.tourService.post('things', this.thingForm.value)
         .toPromise()
         .then((response) => {
+            this.reloadData.emit();
             console.log('newThing - success', response);
         })
         .catch((error) => {
@@ -83,4 +99,50 @@ export class ThingComponent {
         });
     }
 
+    initializeModal(thingID?: number) {
+        if (thingID) {
+            this.selectedThingID = thingID
+            console.log(thingID)
+            this.thingForm.setValue({
+                category: this.data.category,
+                name: this.thingsMap[thingID]['name'],
+                perPerson: this.thingsMap[thingID]['perPerson'], 
+                unitID: this.thingsMap[thingID]['unitID'],
+                weight: this.thingsMap[thingID]['weight'],
+            })
+        } else {
+            this.selectedThingID = -1
+            this.thingForm.setValue({
+                category: '',
+                name: '',
+                perPerson: null, 
+                unitID: null,
+                weight: null,
+            })
+        }
+    }
+
+    editThing(thingID: number) {
+        this.tourService.put('things/'+thingID, this.thingForm.value)
+        .toPromise()
+        .then((response) => {
+            this.reloadData.emit();
+            console.log('deleteThing - success', response);
+        })
+        .catch((error) => {
+            console.error('deleteThing - error', error);
+        });
+    }
+
+    deleteThing(thingID: number) {
+        this.tourService.delete('things/'+thingID)
+        .toPromise()
+        .then((response) => {
+            this.reloadData.emit();
+            console.log('deleteThing - success', response);
+        })
+        .catch((error) => {
+            console.error('deleteThing - error', error);
+        });
+    }
 }

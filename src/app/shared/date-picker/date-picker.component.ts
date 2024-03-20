@@ -12,8 +12,8 @@ import { JsonPipe } from '@angular/common';
 })
 export class DatePickerComponent {
 
-    @Output() startDatePicked = new EventEmitter<Date | null>();
-    @Output() endDatePicked = new EventEmitter<Date | null>();
+    @Output() startDatePicked = new EventEmitter<Date>();
+    @Output() endDatePicked = new EventEmitter<Date>();
 
     calendar = inject(NgbCalendar);
 	formatter = inject(NgbDateParserFormatter);

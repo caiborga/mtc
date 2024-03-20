@@ -7,14 +7,15 @@
 
 @for (tour of tours; track $index) {
 
-    <div class="card text-start mt-4" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">
+    <div class="card text-start mt-4" >
         <div class="card-header">
             {{tour.name}}
         </div>
         <div class="card-body">
-            <h5 class="card-title">{{tour.name}}</h5>
-            <p class="card-text">{{tour.from}} bis {{tour.to}} </p>
+            <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.name}}</h5>
+            <p class="card-text">{{tour.start}} bis {{tour.end}} </p>
             <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
+            <button (click)="deleteTour(tour.id)">Löschen</button>
         </div>
     </div>
 }
@@ -30,31 +31,37 @@
 	<div class="modal-body">
         <form [formGroup]="tourForm">
 			<div class="mb-3">
-				<div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                    <label for="floatingInput">Name</label>
                 </div>
-                <app-date-picker 
-                    (startDatePicked)="this.tourForm.get('start')!.setValue($event)"
-                    (endDatePicked)="this.tourForm.get('end')!.setValue($event)"
+                <app-date-picker
+                    (startDatePicked)="this.tourForm.get('start')!.setValue($event.toLocaleDateString())"
+                    (endDatePicked)="this.tourForm.get('end')!.setValue($event.toLocaleDateString())"
                 ></app-date-picker>
-                <input
-                id="typeahead-prevent-manual-entry"
-                type="text"
-                placeholder="Suchen.."
-                class="form-control"
-                [(ngModel)]="newParticipant"
-                [ngModelOptions]="{standalone: true}"
-                [ngbTypeahead]="search"
-                [inputFormatter]="formatter"
-                [resultFormatter]="formatter"
-                [editable]="false"
-            />
+                <!-- PARTICIPANTS -->
+                <div class="form-floating mb-3">
+                    <input
+                    #input
+                    id="typeahead-prevent-manual-entry"
+                    type="text"
+                    placeholder="Teilnehmer wählen.."
+                    class="form-control"
+                    [ngbTypeahead]="searchParticipants"
+                    [inputFormatter]="getParticipantName"
+                    [resultFormatter]="getParticipantID"
+                    [editable]="false"
+                    (selectItem)="addParticipant($event)"
+                    />
+                    <label for="floatingInput">Teilnehmer hinzufügen</label>
+                </div>
 			</div>
-            <span class="badge text-bg-primary me-1 py-1">Test</span>
-
+            @for (participant of newParticipants; track $index) {
+                <span class="badge text-bg-primary me-1 py-1">
+                    {{participantsMap[participant['id']].name}} 
+                    <i class="bi bi-x-circle" style="cursor: pointer;" (click)="removeParticipant(participant)"></i>
+                </span>
+            }
 		</form>
 	</div>
 	<div class="modal-footer">

@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { foodUnits } from '../../models/units';
+import { foodUnits, Unit } from '../../models/units';
 
 @Component({
     selector: 'app-unit-picker',
@@ -15,20 +15,35 @@ import { foodUnits } from '../../models/units';
 
 export class UnitPickerComponent {
 
-    @Input() unitInput: string = 'Suche..';
-    @Output() unitOutput = new EventEmitter<string>();
-    selectedUnit: string = '';
+    @Input() unitInput: number = 0;
+    @Output() unitOutput = new EventEmitter<number>();
+    selectedUnit: Unit = { 
+        id: 0,
+        unit: '',
+    }
 
-    search: OperatorFunction<string, readonly { unit: string }[]> = (text$: Observable<string>) =>
-		text$.pipe(
-			debounceTime(200),
-			distinctUntilChanged(),
-			filter((term) => term.length >= 1),
-			map((term) => foodUnits.filter((units) => new RegExp(term, 'mi').test(units.unit)).slice(0, 10)),
-		);
+    search: OperatorFunction<string, readonly { id: number, unit: string }[]> = (text$: Observable<string>) =>
+    text$.pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        filter((term) => term.length >= 1),
+        map((term) => {
+            const results: { id: number, unit: string }[] = [];
+            for (const id in foodUnits) {
+                if (foodUnits.hasOwnProperty(id)) {
+                    const unit = foodUnits[id];
+                    if (new RegExp(term, 'mi').test(unit.unit)) {
+                        results.push(unit);
+                    }
+                }
+            }
+            return results.slice(0, 10);
+        })
+    );
 
     setUnit() {
-        this.unitOutput.emit(this.selectedUnit);
+        console.log("this.selectedunit", this.selectedUnit)
+        this.unitOutput.emit(this.selectedUnit.id);
     }
 		
 	formatter = (x: { unit: string }) => x.unit;

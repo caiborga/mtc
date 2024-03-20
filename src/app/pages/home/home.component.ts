@@ -1,5 +1,5 @@
-import { Component, inject, TemplateRef } from '@angular/core';
-import { FormControl, FormGroup, FormsModule } from '@angular/forms';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, NgModel } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -17,9 +17,14 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
     styleUrl: './home.component.css'
 })
 export class HomeComponent {
-    newParticipant: any;
+
+    newParticipants: Array<any> = [];
     participantsMap: Array<any> = [];
     tours: Array<any> = [];
+
+    // @ViewChild('input') inputField: NgModel | null = null;
+    @ViewChild('input') inputField!: NgModel;
+
 
     constructor(
         private tourService: TourService
@@ -52,9 +57,8 @@ export class HomeComponent {
 
     tourForm = new FormGroup({
         name: new FormControl(''),
-        start: new FormControl<Date | null>(null),
-        participants: new FormControl(''),
-        end: new FormControl<Date | null>(null)
+        start: new FormControl(''),
+        end: new FormControl(''),
     });
 
     ngOnInit() {
@@ -67,10 +71,15 @@ export class HomeComponent {
         .toPromise()
         .then((response) => {
             this.tours = response.tours;
-            console.log('Daten abgerufen:', this.tours);
+            console.log('getTours - success:', this.tours);
+            for (let tour in this.tours) {
+                let participants = this.tours[tour].participants.replace(/"/g, '').split(',');
+                this.tours[tour].participants = participants
+            }
+            
         })
         .catch((error) => {
-            console.error('Fehler beim Abrufen der Daten:', error);
+            console.error('getTours - error:', error);
         });
     }
 
@@ -78,12 +87,13 @@ export class HomeComponent {
         this.tourService.get('participants')
         .toPromise()
         .then((response) => {
-            this.participantsMap = response.participants;
+            //this.participantsMap = response.participants;
             console.log('getParticipants - success', this.participantsMap);
-            // for (var i = 0; i < participants.length; i++) {
-            //     var name = participants[i].name;
-            //     this.participantsMap[name] = participants[i];
-            // }
+            for (var i = 0; i < response.participants.length; i++) {
+                var id = response.participants[i].id;
+                this.participantsMap[id] = response.participants[i];
+            }
+            console.log("participantsMap", this.participantsMap)
 
         })
         .catch((error) => {
@@ -92,10 +102,17 @@ export class HomeComponent {
     }
 
     newTour() {
-        console.log("tourForm", this.tourForm.value)
-        this.tourService.post('tours', this.tourForm)
+        const data = {
+            name: this.tourForm.get('name')!.value,
+            start: this.tourForm.get('start')!.value,
+            end: this.tourForm.get('end')!.value,
+            participants: this.newParticipants.toString(),
+        };
+        console.log("tourForm", data)
+        this.tourService.post('tours', data)
         .toPromise()
         .then((response) => {
+            this.getTours()
             console.log('newTour - success', response);
         })
         .catch((error) => {
@@ -104,7 +121,7 @@ export class HomeComponent {
         console.log("tours", this.tours)
     }
 
-    search: OperatorFunction<string, readonly { name: string }[]> = (text$: Observable<string>) =>
+    searchParticipants: OperatorFunction<string, readonly { name: string }[]> = (text$:  Observable<string>) =>
 		text$.pipe(
 			debounceTime(200),
 			map((term) =>
@@ -114,7 +131,38 @@ export class HomeComponent {
 			),
 		);
 
-        formatter = (x: { name: string }) => x.name;
+    getParticipantName = (x: { id: string }) => x.id;
 
+    getParticipantID = (x: { name: string }) => x.name;
 
+    addParticipant(participantID: any){
+
+        // Dynamisch den Eigenschaftsnamen hinzufügen
+        this.newParticipants[participantID.item.id] = {
+            id: participantID.item.id,
+            start: this.tourForm.get('start')!.value,
+            end: this.tourForm.get('end')!.value,
+        };
+        console.log(this.newParticipants);
+        
+    }
+
+    removeParticipant(participantID: any) {
+        const index = this.newParticipants.indexOf(participantID);
+        if (index !== -1) {
+            this.newParticipants.splice(index, 1);
+        }
+    }
+
+    deleteTour(tourID: string) {
+        this.tourService.delete('tours/' + tourID)
+        .toPromise()
+        .then((response) => {
+            this.getTours()
+            console.log('Delete tour - success', response);
+        })
+        .catch((error) => {
+            console.error('Delete tour - error', error);
+        });
+    }
 }

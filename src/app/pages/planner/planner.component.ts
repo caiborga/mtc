@@ -9,98 +9,100 @@ import { NgbCollapseModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bo
 import { RouterLink } from '@angular/router';
 
 import { ActivatedRoute } from '@angular/router';
+import { TourService } from '../../services/tour.service';
+
 
 
 // API Abfrage einer bestimmten Tour mit ID x
-const tour = {
-    breakfastCount: 2,
-    dinnerCount: 2,
-    from: '01.01.2023',
-    id: 1,  
-    name: 'Bichlhütte',
-    to: '01.01.2023',
-    participants: [ 
-        { 
-            id: '1',
-            name: 'Sören'
-        },
-        { 
-            id: '2',
-            name: 'Thomas'
-        },
-        { 
-            id: '3',
-            name: 'Herbert'
-        },
-        { 
-            id: '4',
-            name: 'Paul'
-        },
-        {
-            id: '5',
-            name: 'Tine'
-        },
-    ],
-    things: [
-        {   
-            id: '1',
-            name: 'Bose Box',
-            carrier: '' 
-        },
-        {
-            id: '2',
-            name: 'Nudeln',
-            carrier: ''
-        },
-        {
-            id: '3',
-            name: 'Reis',
-            carrier: ''
-        } ,
-        {
-            id: '4',
-            name: 'Essig', 
-            carrier: ''
-        },
-        {
-            id: '5',
-            name: 'Schockolade',
-            carrier: ''
-        }, 
-        {
-            id: '6',
-            name: 'Penis',
-            carrier: ''
-        },
-        {
-            id: '7',
-            name: 'Taschentücher',
-            carrier: '',
-        }
-    ],
-    meals: [
-        {
-            type: 'dinner',
-            meal: 'Reis mit Scheiß',
-            date: '01.03.2023',
-        },
-        {
-            type: 'breakfast',
-            meal: 'Müsli',
-            date: '02.03.2023',
-        },
-        {
-            type: 'dinner',
-            meal: 'NumiPe',
-            date: '02.03.2023',
-        },
-        {
-            type: 'breakfast',
-            meal: 'Müsli',
-            date: '03.03.2023',
-        },
-    ]
-}
+// const tour = {
+//     breakfastCount: 2,
+//     dinnerCount: 2,
+//     from: '01.01.2023',
+//     id: 1,  
+//     name: 'Bichlhütte',
+//     to: '01.01.2023',
+//     participants: [ 
+//         { 
+//             id: '1',
+//             name: 'Sören'
+//         },
+//         { 
+//             id: '2',
+//             name: 'Thomas'
+//         },
+//         { 
+//             id: '3',
+//             name: 'Herbert'
+//         },
+//         { 
+//             id: '4',
+//             name: 'Paul'
+//         },
+//         {
+//             id: '5',
+//             name: 'Tine'
+//         },
+//     ],
+//     things: [
+//         {   
+//             id: '1',
+//             name: 'Bose Box',
+//             carrier: '' 
+//         },
+//         {
+//             id: '2',
+//             name: 'Nudeln',
+//             carrier: ''
+//         },
+//         {
+//             id: '3',
+//             name: 'Reis',
+//             carrier: ''
+//         } ,
+//         {
+//             id: '4',
+//             name: 'Essig', 
+//             carrier: ''
+//         },
+//         {
+//             id: '5',
+//             name: 'Schockolade',
+//             carrier: ''
+//         }, 
+//         {
+//             id: '6',
+//             name: 'Penis',
+//             carrier: ''
+//         },
+//         {
+//             id: '7',
+//             name: 'Taschentücher',
+//             carrier: '',
+//         }
+//     ],
+//     meals: [
+//         {
+//             type: 'dinner',
+//             meal: 'Reis mit Scheiß',
+//             date: '01.03.2023',
+//         },
+//         {
+//             type: 'breakfast',
+//             meal: 'Müsli',
+//             date: '02.03.2023',
+//         },
+//         {
+//             type: 'dinner',
+//             meal: 'NumiPe',
+//             date: '02.03.2023',
+//         },
+//         {
+//             type: 'breakfast',
+//             meal: 'Müsli',
+//             date: '03.03.2023',
+//         },
+//     ]
+// }
 
 interface Meal {
     type: string,
@@ -138,12 +140,10 @@ interface Thing {
 })
 export class PlannerComponent {
 
-    dinnerImage = 'https://i1.wp.com/www.voi-lecker.de/wp-content/uploads/2021/07/Italienisches-Menue.jpg?fit=1200%2C800&ssl=1'
-    breakfastImage = 'https://www.vitalaire.de/sites/default/files/styles/small_x1/public/2023-07/Original_Gesundes%20Fr%C3%BChst%C3%BCck_Article_800x542.jpg?itok=YYbLgz7K'
-
     isCollapsed = true;
+    loading: boolean = false;
     tableView = false;
-    tourData = tour;
+    tourData: any;
     tourID: number = 0;
     newParticipant: Participant = {
         id: '',
@@ -172,20 +172,19 @@ export class PlannerComponent {
     });
 
     constructor(
+        private formBuilder: FormBuilder,
         private route: ActivatedRoute, 
-        private formBuilder: FormBuilder
+        private tourService: TourService,
     ) {}
 
     ngOnInit() {
+        this.loading = true;
         this.sub = this.route.params.subscribe(params => {
             this.tourID = + params['id'];
         });
-        this.participants = tour.participants;
-        this.participantsMap = tour.participants.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
-        this.things = tour.things;
-        this.thingsMap = tour.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
-
-        this.meals = tour.meals;
+        this.getParticipants()
+        this.getTourData(this.tourID)
+        
         //Suche nach Element mit KEY x
         //this.participants = tour[this.tourID as keyof typeof tour].participants;
     }
@@ -229,5 +228,47 @@ export class PlannerComponent {
         console.log("thing",this.thingsMap)
         console.log("participants",this.participants)
         
+    }
+
+    getParticipants() {
+        this.tourService.get('participants')
+        .toPromise()
+        .then((response) => {
+            //this.participantsMap = response.participants;
+            console.log('getParticipants - success', this.participantsMap);
+            for (var i = 0; i < response.participants.length; i++) {
+                var id = response.participants[i].id;
+                this.participantsMap[id] = response.participants[i];
+            }
+            console.log("participantsMap", this.participantsMap)
+
+        })
+        .catch((error) => {
+            console.error('getParticipants - error', error);
+        });
+    }
+
+    getTourData(tourID: number) {
+        this.tourService.get('tour/' + tourID)
+        .toPromise()
+        .then((response) => {
+            this.tourData = response.tour
+            console.log('getTourData - success', response.tour);
+
+            let participants =  this.tourData.participants.replace(/"/g, '').split(',');
+            this.tourData.participants = participants
+
+            this.participants = this.tourData.participants
+            //this.participantsMap = response.participants.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+            this.things = response.things;
+            //this.thingsMap = response.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+
+            this.meals = response.meals;
+            this.loading = false;
+        })
+        .catch((error) => {
+            console.error('getTourData - error', error);
+            this.loading = false;
+        });
     }
 }
