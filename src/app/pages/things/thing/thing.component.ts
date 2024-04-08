@@ -1,16 +1,17 @@
 import { Component, EventEmitter, inject, Input, OnChanges, Output, TemplateRef, SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { TourService } from '../../../services/tour.service';
 import { UnitPickerComponent } from '../../../shared/unit-picker/unit-picker.component';
 import { CategoryData } from '../things.component';
 import { foodUnits, Unit } from '../../../models/units';
+import { AddThingComponent } from '../../../shared/add-thing/add-thing.component';
 
 @Component({
   selector: 'app-thing',
   standalone: true,
-  imports: [ReactiveFormsModule, UnitPickerComponent],
+  imports: [AddThingComponent, ReactiveFormsModule, UnitPickerComponent],
   templateUrl: './thing.component.html',
   styleUrl: './thing.component.css'
 })
@@ -20,9 +21,9 @@ export class ThingComponent implements OnChanges{
     @Input() data: CategoryData;
     @Output() reloadData = new EventEmitter();
 
-    closeResult = '';
     thingForm = new FormGroup({
         category: new FormControl(''),
+        id: new FormControl(-1),
         name: new FormControl(''),
         perPerson: new FormControl(null), 
         unitID: new FormControl(0),
@@ -64,26 +65,8 @@ export class ThingComponent implements OnChanges{
         this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
     }
 
-    private getDismissReason(reason: any): string {
-        switch (reason) {
-            case ModalDismissReasons.ESC:
-                return 'by pressing ESC';
-            case ModalDismissReasons.BACKDROP_CLICK:
-                return 'by clicking on a backdrop';
-            default:
-                return `with: ${reason}`;
-        }
-    }
-
     open(content: TemplateRef<any>) {
-		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
-			(result) => {
-				this.closeResult = `Closed with: ${result}`;
-			},
-			(reason) => {
-				this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-			},
-		);
+		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
 	}
 
     newThing() {
@@ -105,6 +88,7 @@ export class ThingComponent implements OnChanges{
             console.log(thingID)
             this.thingForm.setValue({
                 category: this.data.category,
+                id: thingID,
                 name: this.thingsMap[thingID]['name'],
                 perPerson: this.thingsMap[thingID]['perPerson'], 
                 unitID: this.thingsMap[thingID]['unitID'],
@@ -113,7 +97,8 @@ export class ThingComponent implements OnChanges{
         } else {
             this.selectedThingID = -1
             this.thingForm.setValue({
-                category: '',
+                category: this.data.category,
+                id: -1,
                 name: '',
                 perPerson: null, 
                 unitID: null,
@@ -122,15 +107,15 @@ export class ThingComponent implements OnChanges{
         }
     }
 
-    editThing(thingID: number) {
-        this.tourService.put('things/'+thingID, this.thingForm.value)
+    editThing() {
+        this.tourService.put('things/'+ this.thingForm.value.id, this.thingForm.value)
         .toPromise()
         .then((response) => {
             this.reloadData.emit();
-            console.log('deleteThing - success', response);
+            console.log('editThing - success', response);
         })
         .catch((error) => {
-            console.error('deleteThing - error', error);
+            console.error('editThing - error', error);
         });
     }
 

@@ -10,7 +10,9 @@ import { RouterLink } from '@angular/router';
 
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../services/tour.service';
-
+import { AddParticipantComponent } from '../../shared/add-participant/add-participant.component';
+import { AddThingComponent } from '../../shared/add-thing/add-thing.component';
+import { CarsharingComponent } from './carsharing/carsharing.component';
 
 
 // API Abfrage einer bestimmten Tour mit ID x
@@ -111,22 +113,27 @@ interface Meal {
 }
 
 interface Participant {
+    avatar?: string,
+    burdens: Array<string>,
     id: string,
-    name: string,
-    things: Array<Object>
+    name?: string,
+    start?: string,
+    end?: string
 }
 
 interface Thing {
     id: string,
-    name: string,
+    name?: string,
     carrier: string
 }
-
 
 @Component({
     selector: 'app-planner',
     standalone: true,
     imports: [
+        AddParticipantComponent,
+        AddThingComponent,
+        CarsharingComponent,
         CommonModule, 
         DatePickerComponent, 
         FormsModule,
@@ -148,10 +155,15 @@ export class PlannerComponent {
     newParticipant: Participant = {
         id: '',
         name: '',
-        things: []
+        burdens: []
     }
     participants: any;
     participantsMap: { [key: string]: Participant } = {};
+    tourMeals: Array<Meal> = [];
+    tourParticipants: Array<Participant> = [];
+    tourParticipantsMap: any;
+    tourThings: Array<Thing> = [];
+    tourThingsMap: any;
     things: Array<Thing> = [];
     thingsMap: { [key: string]: Thing } = {};
     thingsForm = new FormGroup({
@@ -183,6 +195,7 @@ export class PlannerComponent {
             this.tourID = + params['id'];
         });
         this.getParticipants()
+        this.getThings()
         this.getTourData(this.tourID)
         
         //Suche nach Element mit KEY x
@@ -190,43 +203,21 @@ export class PlannerComponent {
     }
 
     open(content: TemplateRef<any>) {
-		this.offcanvasService.open(content, { ariaLabelledBy: 'offcanvas-basic-title' }).result.then(
-			(result) => {
-				this.closeResult = `Closed with: ${result}`;
-			},
-			(reason) => {
-				this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-			},
-		);
+		this.offcanvasService.open(content, { ariaLabelledBy: 'offcanvas-basic-title' });
 	}
-
-	private getDismissReason(reason: any): string {
-		switch (reason) {
-			case OffcanvasDismissReasons.ESC:
-				return 'by pressing ESC';
-			case OffcanvasDismissReasons.BACKDROP_CLICK:
-				return 'by clicking on the backdrop';
-			default:
-				return `with: ${reason}`;
-		}
-	}
-
-    dummy() {
-        console.log("things",this.things)
-    }
 
     assignThingTo(thingID: string, event: any){
-        
-        let carrier = ''
-        let participantID = event.target.value
-        if ( participantID != '') {
-            carrier = this.participantsMap[participantID].name
-        }
+        console.log("thingID", thingID, "event", event)
+        let carrierID = event.target.value
 
-        this.thingsMap[thingID].carrier = carrier
+        const foundObject = this.tourThings.find(item => item.id === thingID);
         
-        console.log("thing",this.thingsMap)
-        console.log("participants",this.participants)
+        if (foundObject) {
+            foundObject.carrier = carrierID;
+            console.log("Object found and updated:", foundObject);
+        } else {
+            console.log("Object with ID", thingID, "not found.");
+        }
         
     }
 
@@ -234,8 +225,9 @@ export class PlannerComponent {
         this.tourService.get('participants')
         .toPromise()
         .then((response) => {
-            //this.participantsMap = response.participants;
-            console.log('getParticipants - success', this.participantsMap);
+            this.participants = response.participants
+            this.participantsMap = response.participants.reduce((obj: any, cur: any) => ({...obj, [cur.id]: cur}), {})
+            console.log('getParticipants - success', response );
             for (var i = 0; i < response.participants.length; i++) {
                 var id = response.participants[i].id;
                 this.participantsMap[id] = response.participants[i];
@@ -248,6 +240,27 @@ export class PlannerComponent {
         });
     }
 
+    getThings() {
+        this.tourService.get('things')
+        .toPromise()
+        .then((response) => {
+            this.things = response.things
+            this.thingsMap = response.things.reduce((obj: any, cur: any) => ({...obj, [cur.id]: cur}), {})
+            if ( response.things.length > 0) {
+                for (var i = 0; i < response.things.length; i++) {
+                    var id = response.things[i].id;
+                    this.thingsMap[id] = response.things[i];
+                }
+            }
+            
+            console.log("thingsMap", this.thingsMap)
+
+        })
+        .catch((error) => {
+            console.error('getThings - error', error);
+        });
+    }
+
     getTourData(tourID: number) {
         this.tourService.get('tour/' + tourID)
         .toPromise()
@@ -255,20 +268,62 @@ export class PlannerComponent {
             this.tourData = response.tour
             console.log('getTourData - success', response.tour);
 
-            let participants =  this.tourData.participants.replace(/"/g, '').split(',');
-            this.tourData.participants = participants
+            this.tourParticipants = JSON.parse(this.tourData.participants)
+            this.tourThings = JSON.parse(this.tourData.things)
+            
+            console.log('getTourData - tourParticipants', this.tourParticipants);
+            console.log('getTourData - tourThings', this.tourThings);
 
-            this.participants = this.tourData.participants
-            //this.participantsMap = response.participants.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
-            this.things = response.things;
-            //this.thingsMap = response.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
 
-            this.meals = response.meals;
+            this.tourMeals = response.meals;
             this.loading = false;
         })
         .catch((error) => {
             console.error('getTourData - error', error);
             this.loading = false;
+        });
+    }
+
+    addTourParticipant(inputData: any) {
+        console.log("participantID", inputData.target.value)
+        let participantID = inputData.target.value
+        let participant = {
+            id: participantID,
+            start: this.tourData.start,
+            end: this.tourData.end,
+            burdens: []
+        }
+        this.tourParticipants.push(participant)
+        console.log("tourData", this.tourData)
+    }
+
+    addTourThing(inputData: any) {
+        console.log("thingID", inputData.target.value)
+        let thing = {
+            id: inputData.target.value,
+            carrier: ''
+        }
+        this.tourThings.push(thing)
+        console.log("tourThings", this.tourThings)
+    }
+
+    editTour() {
+        const data = {
+            name: this.tourData.name,
+            start: this.tourData.start,
+            end: this.tourData.end,
+            participants: JSON.stringify(this.tourParticipants),
+            things: JSON.stringify(this.tourThings),
+        };
+        console.log("editTour data", data)
+        this.tourService.put('tour/' + this.tourID, data)
+        .toPromise()
+        .then((response) => {
+            console.log('editTour - success', response);
+            this.getTourData(this.tourID)
+        })
+        .catch((error) => {
+            console.error('editTour - error', error);
         });
     }
 }

@@ -13,11 +13,11 @@
             <i *ngIf="!tableView" class="bi bi bi-distribute-horizontal" style="cursor: pointer;" (click)="tableView ? tableView = false : tableView = true"></i>
             <i *ngIf="tableView" class="bi bi-distribute-vertical" style="cursor: pointer;" (click)="tableView ? tableView = false : tableView = true"></i>
             <i class="bi bi-gear" style="cursor: pointer;" (click)="isCollapsed = !isCollapsed"></i>
-            <i class="ph ph-cooking-pot"></i>
+            <i class="bi bi-car-front-fill" style="cursor: pointer;" (click)="isCollapsed = !isCollapsed"></i>
         </div>
         <div class="card-body p-3" style="height: 100px;">
             <h2 style="cursor: pointer;">{{tourData.name}} </h2> 
-            <h5>{{tourData.start}} bis {{tourData.end}}</h5>
+            <h5>{{tourData.start }} bis {{tourData.end }}</h5>
         </div>
     </div>
     
@@ -29,58 +29,68 @@
                     <h4>Tour Details</h4>
                     <form [formGroup]="tourForm">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-12">
                                 <table class="table">
                                     <tbody>
+                                        <!-- START -->
                                         <tr>
                                             <th scope="row">Anreise:</th>
                                             <td>
                                                 <div class="row">
                                                     <div class="col-3">
-                                                        {{tourData.from}}
+                                                        {{tourData.start}}
                                                     </div>
-                                                    <div class="col-6">
+                                                    <!-- <div class="col-6">
                                                         <div class="form-check">
                                                             <input formControlName="arrivalChecked" class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
                                                             <label class="form-check-label" for="flexCheckChecked">
                                                                 Anreise morgends
                                                             </label>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
                                             </td>
                                         </tr>
+                                        <!-- END -->
                                         <tr>
                                             <th scope="row">Abreise:</th>
                                             <td>
                                                 <div class="row">
                                                     <div class="col-3">
-                                                        {{tourData.from}}
+                                                        {{tourData.end}}
                                                     </div>
-                                                    <div class="col-6">
+                                                    <!-- <div class="col-6">
                                                         <div class="form-check">
                                                             <input formControlName="departureChecked" class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
                                                             <label class="form-check-label" for="flexCheckChecked">
                                                                 Abreise morgends
                                                             </label>
                                                         </div>
+                                                    </div> -->
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- PARTICIPANTS    -->
+                                        <tr>
+                                            <th scope="row">Teilnehmer:</th>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        {{tourParticipants.length}}
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-6">
-                                <table class="table">
-                                    <tbody>
+                                        <!-- THINGS -->
                                         <tr>
-                                            <th scope="row">Anzahl Frühstück:</th>
-                                            <td>{{tourData.breakfastCount}}</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">Anzahl Abendessen:</th>
-                                            <td>{{tourData.dinnerCount}}</td>
+                                            <th scope="row">Mitbringsel:</th>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        {{tourThings.length}}
+                                                    </div>
+                                                </div>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -94,33 +104,45 @@
     
     <div class="row">
         <!-- PARTICIPANTS -->
-        <div [ngClass]="tableView ? 'col-6' : ''">
+        <div [ngClass]="tableView ? 'col' : ''">
             <div class="card mt-2 shadow-sm">
                 <div class="card-header d-flex justify-content-between">
-                    <h4 class="p-3">Teilnehmer</h4> 
-                    <input class="h-50 btn btn-primary mt-3 me-2" type="button" value="Hinzufügen">
+                    <h4 class="p-3">Teilnehmer</h4>
+                    <div>
+                        <!-- SELECT BOX -->
+                        <select class="form-select form-select-sm" aria-label="Small select example" (change)="addTourParticipant($event)">
+                            <option selected>Teilnehmer hinzufügen</option>
+                            @for (participant of participants; track participant.name) {
+                                    <option [value]="participant.id">{{ participant.name }}</option>
+                                } @empty {
+                                    <li>There are no items.</li>
+                                }
+                        </select>
+                    </div>
+                    <!-- ADD PARTICIPANT -->
+                    <app-add-participant (reloadData)="getParticipants()"></app-add-participant>
                 </div>
                 
                 <div class="card-body mx-2 mb-2">
-                    @for (participant of participants; track participant) {
+                    @for (participant of tourParticipants; track participant.id; let  i = $index) {
                         <div ngbAccordion>
                             <div ngbAccordionItem [collapsed]="true">
                                 <h2 ngbAccordionHeader>
-                                    <button ngbAccordionButton>{{participantsMap[participant].name}}
+                                    <button ngbAccordionButton>
+                                        <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}.jpg">
+                                        {{participantsMap[participant.id].name}}
                                         <!-- SHOW BURDEN COUNT -->
                                     </button>
                                 </h2>
                                 <div ngbAccordionCollapse>
                                     <div ngbAccordionBody>
                                         <ng-template>
-                                            Anreise: {{tourData.from}} 
-                                            Abreise: {{tourData.to}}
                                             <ol class="list-group list-group-numbered">
-                                                @for (burden of thingsMap | keyvalue; track burden;) {
-                                                    @if(burden.value.carrier == participant.name){
+                                                @for (burden of tourThings; track burden;) {
+                                                    @if(burden.carrier == participant.id){
                                                         <li class="list-group-item d-flex justify-content-between align-items-start">
                                                             <div class="ms-2 me-auto">
-                                                                <div class="fw-bold">{{burden.value.name}}</div>
+                                                                <div class="fw-bold">{{thingsMap[burden.id].name}}</div>
                                                             </div>
                                                             <!-- <span class="badge text-bg-primary rounded-pill">14</span> -->
                                                         </li>
@@ -143,27 +165,38 @@
             
         </div>
         <!-- THINGS -->
-        <div [ngClass]="tableView ? 'col-6' : ''">
+        <div [ngClass]="tableView ? 'col' : ''">
             <div class="card mt-2 shadow-sm">
                 <div class="card-header d-flex justify-content-between">
-                    <h4 class="p-3">Mitbringsel</h4>
-                    <input class="h-50 btn btn-primary mt-3 me-2" type="button" value="Hinzufügen">
+                    <h4 class="p-3">Gepäck</h4>
+                    <div>
+                        <select class="form-select form-select-sm" aria-label="Small select example" (change)="addTourThing($event)">
+                            <option selected>Gepäck hinzufügen</option>
+                            @for (thing of things; track thing.name) {
+                                    <option [value]="thing.id">{{ thing.name }}</option>
+                                } @empty {
+                                    <li>There are no items.</li>
+                                }
+                        </select>
+                    </div>
+                    <app-add-thing (reloadData)="getThings();">
+                    </app-add-thing>
                 </div>
                 <div class="card-body mx-2">
                     <table class="table">
                         <tbody class="border">
-                            @for (thing of things; track thing; let i = $index;) {
+                            @for (thing of tourThings; track thing; let i = $index;) {
                             <tr>
                                 <td class="align-middle" style="height: 54px">
                                     <div class="row">
                                         <div class="col-6 ">
-                                            {{thing.name}}
+                                            {{thingsMap[thing.id].name}}
                                         </div>
                                         <div class="col-6">
                                             <select class="form-select form-select-sm" aria-label="Default select example" (change)="assignThingTo(thing.id, $event)">
                                                 <option [value]="''">Nicht zugewiesen</option>
                                                 @for (participant of participants; track participant){
-                                                    <option [value]="participant.id">{{participant.name}}</option>
+                                                    <option [value]="participant.id" [selected]="participant.id == thing.carrier">{{participant.name}}</option>
                                                 }
                                             </select>
                                         </div>
@@ -176,10 +209,16 @@
                 </div>
             </div>
         </div>
+        <!-- CARSHARING -->
+        <div [ngClass]="tableView ? 'col' : ''">
+            <app-carsharing></app-carsharing>
+        </div>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary m-3" (click)="editTour()">Speichern</button>
     </div>
     </ng-container>
 }
-
 
 <!-- OFFCANVAS MEALS -->
 <ng-template #content let-offcanvas>

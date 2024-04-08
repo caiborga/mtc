@@ -58,7 +58,8 @@
 			</div>
             @for (participant of newParticipants; track $index) {
                 <span class="badge text-bg-primary me-1 py-1">
-                    {{participantsMap[participant['id']].name}} 
+                    {{participantsMap[participant.id].name}}
+                    <!-- {{participantsMap[participant].name}} -->
                     <i class="bi bi-x-circle" style="cursor: pointer;" (click)="removeParticipant(participant)"></i>
                 </span>
             }

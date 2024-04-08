@@ -43,7 +43,7 @@ export interface CategoryData {
 })
 
 export class ThingsComponent {
-    activeTab = 0   ;
+    activeTab = 1;
     things: Thing[] = []
     participantForm = new FormGroup({
         arrival: new FormControl<Date | ''>(''),

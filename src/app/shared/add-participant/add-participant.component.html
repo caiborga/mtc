@@ -1,0 +1,29 @@
+<button type="button" class="btn btn-primary" (click)="openModal(content)">Hinzufügen</button>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        @if (editParticipantInput){<h4 class="modal-title" id="modal-basic-title">{{editParticipantInput.name}} editieren</h4>}
+        @if (!editParticipantInput){<h4 class="modal-title" id="modal-basic-title">Neuer Teilnehmer</h4>}
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+            <div>
+                @if (editParticipantInput){<img class="rounded" style="height: 50px; width: auto;" src="assets\images\avatars\{{editParticipantInput.avatar}}.jpg">}
+            </div>
+            <div>
+                <form [formGroup]="participantForm">
+                    <div class="mb-3">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                            <label for="floatingInput">Name</label>
+                        </div>  
+                    </div>
+                </form>
+            </div>
+    </div>
+    <div class="modal-footer">
+        @if (this.participantForm.get('id')!.value == '') {<button type="button" class="btn btn-outline-dark" (click)="addParticipant(); modal.close('Save click')">Hinzufügen</button>}
+        @if (this.participantForm.get('id')!.value != '') {<button type="button" class="btn btn-outline-dark" (click)="editParticipant(); modal.close('Save click')">Ändern</button>}
+    </div>
+</ng-template>
+

@@ -1,0 +1,64 @@
+<button type="button" class="btn btn-primary mt-1" (click)="initializeModal(); open(content)">Hinzufügen</button>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Neuer Gegenstand</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+        <form [formGroup]="thingForm">
+			<div class="mb-3">
+                @if (data.relevantColumns.name) {
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                        <label for="floatingInput">Name</label>
+                    </div>
+                }
+				<!-- <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm" formControlName="name">Name</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" >
+                </div> -->
+                <div class="row">
+                    @if (data.relevantColumns.perPerson) {
+                        <div class="form-floating mb-3 col-6">
+                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson">
+                            <label for="floatingInput">Pro Kopf pro Tag</label>
+                        </div>
+                    }
+                    <!-- <div class="input-group input-group-sm mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm" formControlName="perPerson">Pro Kopf</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" >
+                    </div> -->
+                    @if (data.relevantColumns.unit) {
+                        <div class="mb-3 col-6">
+                            <app-unit-picker 
+                                (unitOutput)="thingForm.controls['unitID'].setValue($event);" 
+                                [unitInput]="thingForm.controls['unitID'].value!">
+                            </app-unit-picker>
+                        </div>
+                    }
+                </div>
+                <!-- <div class="input-group input-group-sm mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Gewicht</span>
+                    </div>
+                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="weight">
+                </div> -->
+                @if (data.relevantColumns.weight) {
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="weight">
+                        <label for="floatingInput">Gewicht</label>
+                    </div>
+                }
+			</div>
+		</form>
+	</div>
+	<div class="modal-footer">
+		@if(selectedThingID == -1){<button type="button" class="btn btn-outline-dark" (click)="newThing(); modal.close(); initializeModal()">Speichern</button>}
+        @if(selectedThingID != -1){<button type="button" class="btn btn-outline-dark" (click)="editThing(); modal.close(); initializeModal()">Ändern</button>}
+	</div>
+</ng-template>

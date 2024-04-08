@@ -8,7 +8,10 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <h2>Teilnehmer</h2>
-        <button type="button" class="h-50 btn btn-primary mt-1" (click)="open(participantModal);">Hinzufügen</button>
+        <app-add-participant
+            (reloadData)="getParticipants()"
+            [editParticipantInput]="editParticipant">
+        </app-add-participant>
     </div>
 
     @if(!loadingData) {
@@ -25,10 +28,12 @@
                     @for (participant of participants; track participant) {
                         <tr>
                             <!-- <th scope="row">1</th> -->
-                            <td>{{participant.name}}</td>
-                            <td class="d-flex justify-content-end">
-                                <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="initializeModal(participant.id)"></i>
-                                <i class="bi bi-trash text-danger" style="cursor: pointer;" (click)="deleteParticipant(participant.id)"></i>
+                            <td style="height: 50px;">
+                                <img class="rounded" style="height: 30px; width: 30px;" src="assets\images\avatars\{{participant.avatar}}.jpg"> {{participant.name}}
+                            </td>
+                            <td style="height: 50px;" class="d-flex justify-content-end">
+                                <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="editParticipant = participant"></i>
+                                <i class="bi bi-trash text-danger me-2" style="cursor: pointer;" (click)="deleteParticipant(participant.id)"></i>
                             </td>
                         </tr>
                         
@@ -49,23 +54,3 @@
     }
 </div>
 
-<ng-template #participantModal let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Neuer Teilnehmer</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <form [formGroup]="participantForm">
-            <div class="mb-3">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
-                    <label for="floatingInput">Name</label>
-                </div>  
-            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        @if (this.participantForm.get('id')!.value == '') {<button type="button" class="btn btn-outline-dark" (click)="addParticipant(); modal.close('Save click')">Hinzufügen</button>}
-        @if (this.participantForm.get('id')!.value != '') {<button type="button" class="btn btn-outline-dark" (click)="editParticipant(); modal.close('Save click')">Ändern</button>}
-    </div>
-</ng-template>

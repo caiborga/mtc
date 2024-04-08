@@ -19,6 +19,7 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 export class HomeComponent {
 
     newParticipants: Array<any> = [];
+    newThings: Array<any> = [];
     participantsMap: Array<any> = [];
     tours: Array<any> = [];
 
@@ -73,9 +74,10 @@ export class HomeComponent {
             this.tours = response.tours;
             console.log('getTours - success:', this.tours);
             for (let tour in this.tours) {
-                let participants = this.tours[tour].participants.replace(/"/g, '').split(',');
+                let participants = JSON.parse(this.tours[tour].participants)
                 this.tours[tour].participants = participants
             }
+            console.log('getTours - success:', this.tours);
             
         })
         .catch((error) => {
@@ -106,7 +108,8 @@ export class HomeComponent {
             name: this.tourForm.get('name')!.value,
             start: this.tourForm.get('start')!.value,
             end: this.tourForm.get('end')!.value,
-            participants: this.newParticipants.toString(),
+            participants: JSON.stringify(this.newParticipants),
+            things: JSON.stringify(this.newThings),
         };
         console.log("tourForm", data)
         this.tourService.post('tours', data)
@@ -135,16 +138,19 @@ export class HomeComponent {
 
     getParticipantID = (x: { name: string }) => x.name;
 
-    addParticipant(participantID: any){
-
-        // Dynamisch den Eigenschaftsnamen hinzufügen
-        this.newParticipants[participantID.item.id] = {
-            id: participantID.item.id,
-            start: this.tourForm.get('start')!.value,
-            end: this.tourForm.get('end')!.value,
-        };
-        console.log(this.newParticipants);
-        
+    addParticipant(participant: any){
+        const index = this.newParticipants.indexOf(participant);
+        if (index === -1) {
+        console.log("index",index)
+            let newParticipantObject: any = {};
+            newParticipantObject = {
+                id: participant.item.id,
+                start: this.tourForm.get('start')!.value,
+                end: this.tourForm.get('end')!.value,
+            };
+            this.newParticipants.push(newParticipantObject);
+            console.log(this.newParticipants)
+        }
     }
 
     removeParticipant(participantID: any) {
@@ -152,6 +158,8 @@ export class HomeComponent {
         if (index !== -1) {
             this.newParticipants.splice(index, 1);
         }
+        console.log(this.newParticipants)
+
     }
 
     deleteTour(tourID: string) {
