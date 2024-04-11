@@ -40,6 +40,7 @@ export class AddThingComponent {
         this.data = {
             category: '',
             relevantColumns: {
+                category: true,
                 name: true,
                 perPerson: true,
                 unit: true,
@@ -52,7 +53,6 @@ export class AddThingComponent {
 
     ngOnInit() {
         this.thingForm.get('category')!.setValue(this.data.category)
-        console.log("thingForm", this.thingForm)
         this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
     }
 

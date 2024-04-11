@@ -20,6 +20,7 @@ export interface Thing {
 export interface CategoryData {
     category: string,
     relevantColumns: {
+        category: boolean,
         name: boolean,
         perPerson: boolean,
         unit: boolean,
@@ -81,6 +82,7 @@ export class ThingsComponent {
         const Food : CategoryData = {
             category: 'food',
             relevantColumns: {
+                category: false,
                 name: true,
                 perPerson: true,
                 unit: true,
@@ -92,6 +94,7 @@ export class ThingsComponent {
         const Consumables : CategoryData = {
             category: 'consumables',
             relevantColumns: {
+                category: false,
                 name: true,
                 perPerson: true,
                 unit: true,
@@ -103,6 +106,7 @@ export class ThingsComponent {
         const Items : CategoryData = {
             category: 'items',
             relevantColumns: {
+                category: false,
                 name: true,
                 perPerson: false,
                 unit: false,

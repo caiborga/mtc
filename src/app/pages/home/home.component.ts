@@ -74,8 +74,10 @@ export class HomeComponent {
             this.tours = response.tours;
             console.log('getTours - success:', this.tours);
             for (let tour in this.tours) {
-                let participants = JSON.parse(this.tours[tour].participants)
+                let participants = JSON.parse(this.tours[tour].tourParticipants)
+                let tourData = JSON.parse(this.tours[tour].tourData)
                 this.tours[tour].participants = participants
+                this.tours[tour].tourData = tourData
             }
             console.log('getTours - success:', this.tours);
             
@@ -105,11 +107,10 @@ export class HomeComponent {
 
     newTour() {
         const data = {
-            name: this.tourForm.get('name')!.value,
-            start: this.tourForm.get('start')!.value,
-            end: this.tourForm.get('end')!.value,
-            participants: JSON.stringify(this.newParticipants),
-            things: JSON.stringify(this.newThings),
+            tourCars: JSON.stringify([]),
+            tourData: JSON.stringify(this.tourForm.value),
+            tourThings: JSON.stringify([]),
+            tourParticipants: JSON.stringify(this.newParticipants),
         };
         console.log("tourForm", data)
         this.tourService.post('tours', data)

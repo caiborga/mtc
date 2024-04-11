@@ -43,6 +43,7 @@ export class ThingComponent implements OnChanges{
         this.data = {
             category: '',
             relevantColumns: {
+                category: true,
                 name: true,
                 perPerson: true,
                 unit: true,

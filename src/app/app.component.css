@@ -4,3 +4,7 @@
     margin-bottom: 80px;
     margin-top: 80px;
 }
+
+.btn.btn-rounded {
+    border-radius: 50px;
+}  

@@ -1,1 +1,53 @@
-<p>carsharing works!</p>
+<div class="card mt-2 shadow-sm">
+    <div class="card-header">
+        <div class="d-flex justify-content-end">
+            <i class="bi bi-x-lg" style="cursor: pointer;" (click)="showElementChange.emit(false)"></i>
+        </div>
+        <h4 class="p-3">Fahrgemeinschaft</h4>
+        <!-- <select class="form-select form-select-sm" aria-label="Small select example" (change)="setNumberOfCars($event)">
+            <option selected>Gepäck hinzufügen</option>
+            <option selected>Gepäck hinzufügen</option>
+            
+        </select> -->
+        <div class="mb-3">
+            <label for="exampleFormControlInput1" class="form-label">Anzahl</label>
+            <input type="number" class="form-control" id="exampleFormControlInput1" [(ngModel)]="carCount" (change)="setCarCount()">
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="p-2 border-1 surface-border border-round w-15rem">
+            @for (participant of tourParticipants; track participant; let  i = $index) {
+                <span class="badge text-bg-primary me-1 py-1" style="cursor: pointer;" pDraggable (onDragStart)="dragStart(participant.id)" (onDragEnd)="dragEnd()">
+                    <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}.jpg">
+                    {{participantsMap[participant.id].name}}
+                </span>
+            }
+        </div>
+        @for (car of tourCars; track car; let i = $index){
+            <div class="p-2 border-1 surface-border border-round w-15rem" pDroppable (onDrop)="drop(i)">
+                <p class="text-center surface-border border-bottom-1">Auto {{i + 1}}</p>
+                @if (tourCars) {
+                    <div class="card" style="height: 100px;">
+                        <div>
+                            @if (tourCars[i].passengers.length > 0) {
+                                @for (passenger of tourCars[i].passengers; track passenger; let i = $index) {
+                                    <img 
+                                        class="rounded rounded-pill m-2" 
+                                        style="height: 50px; width: auto;" 
+                                        src="assets\images\avatars\{{participantsMap[passenger.valueOf()].avatar}}.jpg" 
+                                        ngbTooltip="{{participantsMap[passenger.valueOf()].name}}"
+                                    >
+                                }
+                            }
+                            @else {
+                                Teilnehmer hier hinzufügen / droppen
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        
+    </div>
+    
+</div>

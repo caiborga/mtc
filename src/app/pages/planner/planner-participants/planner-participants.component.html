@@ -1,0 +1,75 @@
+<div class="card mt-2 shadow-sm">
+    <div class="card-header">
+        <div class="row " style="height: 10px;">
+            <div class="d-flex justify-content-end gap-1">
+                <!-- ADD PARTICIPANT -->
+                <app-add-participant (reloadData)="reloadData.emit()"></app-add-participant>
+                <button type="button" class="btn btn-danger d-flex justify-content-center align-items-center" style="padding: 10px; border-radius: 50%; height: 20px; width: 20px;" (click)="showElementChange.emit(false)">
+                    <i class="ph ph-x" style="font-size: 16px;"></i>
+                </button>
+                <!-- <i class="bi bi-x-lg" style="cursor: pointer;" ></i> -->
+            </div>
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-8">
+                <h4 class="p-3">Teilnehmer</h4>
+            </div>
+            
+            <div class="col-4">
+                <div class="row d-flex align-items-center me-2">
+                    <select class="form-select form-select-sm" aria-label="Small select example" (change)="addTourParticipant($event)">
+                        <option selected>Teilnehmer hinzufügen</option>
+                        @for (participant of participants; track participant.name) {
+                                <option [value]="participant.id">{{ participant.name }}</option>
+                            } @empty {
+                                <li>There are no items.</li>
+                            }
+                    </select>
+                </div>
+                <!-- SELECT BOX -->
+                
+            </div>
+        </div>
+       
+        
+    </div>
+    
+    <div class="card-body mx-2 mb-2">
+        @for (participant of tourParticipants; track participant.id; let  i = $index) {
+            <div ngbAccordion>
+                <div ngbAccordionItem [collapsed]="true">
+                    <h2 ngbAccordionHeader>
+                        <button ngbAccordionButton>
+                            <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}.jpg">
+                            {{participantsMap[participant.id].name}}
+                            <!-- SHOW BURDEN COUNT -->
+                        </button>
+                    </h2>
+                    <div ngbAccordionCollapse>
+                        <div ngbAccordionBody>
+                            <ng-template>
+                                <ol class="list-group list-group-numbered">
+                                    @for (burden of tourThings; track burden;) {
+                                        @if(burden.carrier == participant.id){
+                                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                                <div class="ms-2 me-auto">
+                                                    <div [innerHTML]="getThingDetails(burden)"></div>
+                                                </div>
+                                                <!-- <span class="badge text-bg-primary rounded-pill">14</span> -->
+                                            </li>
+                                        }
+                                    } @empty {
+                                        Bisher nichts zugeordnet
+                                    }
+                                </ol>
+                            </ng-template>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        } @empty {
+            <button type="button" class="list-group-item list-group-item-action"> Bisher keine Teilnehmer </button>
+        }
+    </div>
+</div>

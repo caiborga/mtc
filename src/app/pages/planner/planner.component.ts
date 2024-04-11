@@ -12,6 +12,8 @@ import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../services/tour.service';
 import { AddParticipantComponent } from '../../shared/add-participant/add-participant.component';
 import { AddThingComponent } from '../../shared/add-thing/add-thing.component';
+import { PlannerParticipantsComponent } from './planner-participants/planner-participants.component';
+import { PlannerThingsComponent } from './planner-things/things.component';
 import { CarsharingComponent } from './carsharing/carsharing.component';
 
 
@@ -106,16 +108,22 @@ import { CarsharingComponent } from './carsharing/carsharing.component';
 //     ]
 // }
 
+interface Car {
+    seats?: Number,
+    type?: String,
+    passengers: Number[]
+}
+
 interface Meal {
     type: string,
     meal: string,
     date: string
 }
 
-interface Participant {
+export interface Participant {
     avatar?: string,
     burdens: Array<string>,
-    id: string,
+    id: number,
     name?: string,
     start?: string,
     end?: string
@@ -140,7 +148,9 @@ interface Thing {
         NgbAccordionModule,
         NgbCollapseModule,
         ReactiveFormsModule,
-        RouterLink
+        RouterLink,
+        PlannerParticipantsComponent,
+        PlannerThingsComponent
     ],
     templateUrl: './planner.component.html',
     styleUrl: './planner.component.css'
@@ -153,12 +163,16 @@ export class PlannerComponent {
     tourData: any;
     tourID: number = 0;
     newParticipant: Participant = {
-        id: '',
+        id: -1,
         name: '',
         burdens: []
     }
     participants: any;
     participantsMap: { [key: string]: Participant } = {};
+    showCarSharingBool: boolean = true;
+    showParticipantsBool: boolean = true;
+    showThingsBool: boolean = true;
+    tourCars: Array<Car> = [];
     tourMeals: Array<Meal> = [];
     tourParticipants: Array<Participant> = [];
     tourParticipantsMap: any;
@@ -177,10 +191,9 @@ export class PlannerComponent {
     tourForm = new FormGroup({
         arrivalChecked: new FormControl(false),
         departureChecked: new FormControl(true),
-        from: new FormControl<Date | null>(null),
+        start: new FormControl<Date | null>(null),
         name: new FormControl(''),
-        participants: new FormControl(''),
-        to: new FormControl<Date | null>(null)
+        end: new FormControl<Date | null>(null)
     });
 
     constructor(
@@ -194,6 +207,7 @@ export class PlannerComponent {
         this.sub = this.route.params.subscribe(params => {
             this.tourID = + params['id'];
         });
+
         this.getParticipants()
         this.getThings()
         this.getTourData(this.tourID)
@@ -202,23 +216,19 @@ export class PlannerComponent {
         //this.participants = tour[this.tourID as keyof typeof tour].participants;
     }
 
-    open(content: TemplateRef<any>) {
-		this.offcanvasService.open(content, { ariaLabelledBy: 'offcanvas-basic-title' });
-	}
-
-    assignThingTo(thingID: string, event: any){
-        console.log("thingID", thingID, "event", event)
-        let carrierID = event.target.value
-
-        const foundObject = this.tourThings.find(item => item.id === thingID);
-        
-        if (foundObject) {
-            foundObject.carrier = carrierID;
-            console.log("Object found and updated:", foundObject);
-        } else {
-            console.log("Object with ID", thingID, "not found.");
+    changeTourData() {
+        let data = {
+            tourData: JSON.stringify(this.tourForm.value)
         }
-        
+        this.tourService.put('tour/' + this.tourID + '/data', data)
+        .toPromise()
+        .then((response) => {
+            console.log('editTourThings - success', response);
+        })
+        .catch((error) => {
+            console.error('editTourThings - error', error);
+        });
+        this.getTourData(this.tourData)
     }
 
     getParticipants() {
@@ -227,12 +237,12 @@ export class PlannerComponent {
         .then((response) => {
             this.participants = response.participants
             this.participantsMap = response.participants.reduce((obj: any, cur: any) => ({...obj, [cur.id]: cur}), {})
-            console.log('getParticipants - success', response );
+            // console.log('getParticipants - success', response );
             for (var i = 0; i < response.participants.length; i++) {
                 var id = response.participants[i].id;
                 this.participantsMap[id] = response.participants[i];
             }
-            console.log("participantsMap", this.participantsMap)
+            // console.log("participantsMap", this.participantsMap)
 
         })
         .catch((error) => {
@@ -253,7 +263,7 @@ export class PlannerComponent {
                 }
             }
             
-            console.log("thingsMap", this.thingsMap)
+            // console.log("thingsMap", this.thingsMap)
 
         })
         .catch((error) => {
@@ -265,17 +275,25 @@ export class PlannerComponent {
         this.tourService.get('tour/' + tourID)
         .toPromise()
         .then((response) => {
-            this.tourData = response.tour
             console.log('getTourData - success', response.tour);
 
-            this.tourParticipants = JSON.parse(this.tourData.participants)
-            this.tourThings = JSON.parse(this.tourData.things)
+            this.tourCars = JSON.parse(response.tour.tourCars)
+            this.tourData = JSON.parse(response.tour.tourData)
+            this.tourParticipants = JSON.parse(response.tour.tourParticipants)
+            this.tourThings = JSON.parse(response.tour.tourThings)
+
+            // console.log('getTourData - tourCars', this.tourCars);
+            // console.log('getTourData - tourData', this.tourData);
+            // console.log('getTourData - tourParticipants', this.tourParticipants);
+            // console.log('getTourData - tourThings', this.tourThings);
             
-            console.log('getTourData - tourParticipants', this.tourParticipants);
-            console.log('getTourData - tourThings', this.tourThings);
+            this.tourForm.controls.start.setValue(this.tourData.start)
+            this.tourForm.controls.end.setValue(this.tourData.end)
+            this.tourForm.controls.arrivalChecked.setValue(this.tourData.arrivalChecked)
+            this.tourForm.controls.departureChecked.setValue(this.tourData.departureChecked)
 
 
-            this.tourMeals = response.meals;
+            // this.tourMeals = response.meals;
             this.loading = false;
         })
         .catch((error) => {
@@ -284,46 +302,7 @@ export class PlannerComponent {
         });
     }
 
-    addTourParticipant(inputData: any) {
-        console.log("participantID", inputData.target.value)
-        let participantID = inputData.target.value
-        let participant = {
-            id: participantID,
-            start: this.tourData.start,
-            end: this.tourData.end,
-            burdens: []
-        }
-        this.tourParticipants.push(participant)
-        console.log("tourData", this.tourData)
-    }
-
-    addTourThing(inputData: any) {
-        console.log("thingID", inputData.target.value)
-        let thing = {
-            id: inputData.target.value,
-            carrier: ''
-        }
-        this.tourThings.push(thing)
-        console.log("tourThings", this.tourThings)
-    }
-
-    editTour() {
-        const data = {
-            name: this.tourData.name,
-            start: this.tourData.start,
-            end: this.tourData.end,
-            participants: JSON.stringify(this.tourParticipants),
-            things: JSON.stringify(this.tourThings),
-        };
-        console.log("editTour data", data)
-        this.tourService.put('tour/' + this.tourID, data)
-        .toPromise()
-        .then((response) => {
-            console.log('editTour - success', response);
-            this.getTourData(this.tourID)
-        })
-        .catch((error) => {
-            console.error('editTour - error', error);
-        });
-    }
+    openModal(content: TemplateRef<any>) {
+		this.offcanvasService.open(content, { ariaLabelledBy: 'offcanvas-basic-title' });
+	}
 }

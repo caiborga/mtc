@@ -9,11 +9,11 @@
 
     <div class="card text-start mt-4" >
         <div class="card-header">
-            {{tour.name}}
+            {{tour.tourData.name}}
         </div>
         <div class="card-body">
-            <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.name}}</h5>
-            <p class="card-text">{{tour.start}} bis {{tour.end}} </p>
+            <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.tourData.name}}</h5>
+            <p class="card-text">{{tour.tourData.start}} bis {{tour.tourData.end}} </p>
             <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
             <button (click)="deleteTour(tour.id)">Löschen</button>
         </div>

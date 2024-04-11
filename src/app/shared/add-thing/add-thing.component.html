@@ -8,18 +8,19 @@
 	<div class="modal-body">
         <form [formGroup]="thingForm">
 			<div class="mb-3">
+                @if (data.relevantColumns.category) {
+                    <select class="form-select mb-3" style="height: 55px" formControlName="category">
+                        <option value="food">Nahungsmittel</option>
+                        <option value="consumables">Verbrauchsmaterial</option>
+                        <option value="items">Gegenständeoption>
+                    </select>
+                }
                 @if (data.relevantColumns.name) {
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
                         <label for="floatingInput">Name</label>
                     </div>
                 }
-				<!-- <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm" formControlName="name">Name</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" >
-                </div> -->
                 <div class="row">
                     @if (data.relevantColumns.perPerson) {
                         <div class="form-floating mb-3 col-6">
@@ -27,12 +28,6 @@
                             <label for="floatingInput">Pro Kopf pro Tag</label>
                         </div>
                     }
-                    <!-- <div class="input-group input-group-sm mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="inputGroup-sizing-sm" formControlName="perPerson">Pro Kopf</span>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" >
-                    </div> -->
                     @if (data.relevantColumns.unit) {
                         <div class="mb-3 col-6">
                             <app-unit-picker 
@@ -42,12 +37,6 @@
                         </div>
                     }
                 </div>
-                <!-- <div class="input-group input-group-sm mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">Gewicht</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" formControlName="weight">
-                </div> -->
                 @if (data.relevantColumns.weight) {
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="weight">
