@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AddThingComponent } from '../../../shared/add-thing/add-thing.component';
-import { TourService } from '../../../services/tour.service';
-import { Unit, foodUnits } from '../../../models/units';
+import { TourService } from '../../../core/services/tour.service';
+import { Unit, foodUnits } from '../../../core/models/units';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 

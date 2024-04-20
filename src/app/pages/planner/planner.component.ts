@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, TemplateRef } from '@angular/core';
+import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DatePickerComponent } from '../../shared/date-picker/date-picker.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -9,12 +9,13 @@ import { NgbCollapseModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bo
 import { RouterLink } from '@angular/router';
 
 import { ActivatedRoute } from '@angular/router';
-import { TourService } from '../../services/tour.service';
+import { TourService } from '../../core/services/tour.service';
 import { AddParticipantComponent } from '../../shared/add-participant/add-participant.component';
 import { AddThingComponent } from '../../shared/add-thing/add-thing.component';
 import { PlannerParticipantsComponent } from './planner-participants/planner-participants.component';
 import { PlannerThingsComponent } from './planner-things/things.component';
 import { CarsharingComponent } from './carsharing/carsharing.component';
+import { Message, MessageBoxComponent } from '../../shared/message-box/message-box.component';
 
 
 // API Abfrage einer bestimmten Tour mit ID x
@@ -145,6 +146,7 @@ interface Thing {
         CommonModule, 
         DatePickerComponent, 
         FormsModule,
+        MessageBoxComponent,
         NgbAccordionModule,
         NgbCollapseModule,
         ReactiveFormsModule,
@@ -156,6 +158,8 @@ interface Thing {
     styleUrl: './planner.component.css'
 })
 export class PlannerComponent {
+
+    @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
 
     isCollapsed = true;
     loading: boolean = false;
@@ -202,7 +206,8 @@ export class PlannerComponent {
         private tourService: TourService,
     ) {}
 
-    ngOnInit() {
+    ngOnInit() {    
+
         this.loading = true;
         this.sub = this.route.params.subscribe(params => {
             this.tourID = + params['id'];
@@ -305,4 +310,9 @@ export class PlannerComponent {
     openModal(content: TemplateRef<any>) {
 		this.offcanvasService.open(content, { ariaLabelledBy: 'offcanvas-basic-title' });
 	}
+
+    openMessageBox(message: Message) {
+        console.log("message", message)
+        this.messageBox.changeSuccessMessage(message);
+    }
 }

@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 
 import { MealComponent } from './meal/meal.component';
 import { ThingComponent } from './thing/thing.component';
-import { TourService } from '../../services/tour.service';
+import { TourService } from '../../core/services/tour.service';
 
 export interface Thing {
     id: number,

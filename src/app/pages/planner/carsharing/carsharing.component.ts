@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
 import { FormsModule } from '@angular/forms';
 import { Participant } from '../planner.component';
-import { TourService } from '../../../services/tour.service';
+import { TourService } from '../../../core/services/tour.service';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+
+import { Message, MessageBoxComponent } from '../../../shared/message-box/message-box.component';
 
 interface Car {
     seats?: Number,
@@ -14,7 +16,7 @@ interface Car {
 @Component({
     selector: 'app-carsharing',
     standalone: true,
-    imports: [DragDropModule, FormsModule, NgbTooltipModule],
+    imports: [DragDropModule, FormsModule, MessageBoxComponent, NgbTooltipModule],
     templateUrl: './carsharing.component.html',
     styleUrl: './carsharing.component.css'
 })
@@ -25,8 +27,11 @@ export class CarsharingComponent {
     @Input() tourID: number = -1;
     @Input() tourParticipants: any;
     @Input() showElement: boolean = true;
+    @Output() showMessageBox = new EventEmitter();
     @Output() reloadData = new EventEmitter();
     @Output() showElementChange = new EventEmitter<boolean>();
+
+    @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
 
     carCount: number = 0;
     draggedParticipant: number | null = null
@@ -91,17 +96,28 @@ export class CarsharingComponent {
         return index;
     }
 
-    setCarCount() {
+    setCarCount(modus: string) {
     
-        this.tourCars = []
-        for ( let i = 0; i< this.carCount; i++) {
+        if ( modus === 'increment') {
             let newCar = {
                 passengers: []
             }
             this.tourCars.push(newCar)
+            this.editTourCars()
         }
-
-        this.editTourCars()
+        if ( modus === 'decrement') {
+            console.log("tourCars.length", this.tourCars.length)
+            if ( this.tourCars.length > 0 && this.tourCars[this.tourCars.length - 1].passengers.length == 0 ) {
+                this.tourCars.pop()
+                this.editTourCars()
+            } else {
+                let message: Message = {
+                    type: 'warning',
+                    message: `Da eine Zuweisung besteht, kann Auto ${this.tourCars.length} nicht gelöscht werden!`
+                }
+                this.showMessageBox.emit(message)
+            }
+        }
     }
 
     editTourCars() {

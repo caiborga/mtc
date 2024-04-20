@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
-import { foodUnits, Unit } from '../../models/units';
+import { foodUnits, Unit } from '../../core/models/units';
 
 @Component({
     selector: 'app-unit-picker',

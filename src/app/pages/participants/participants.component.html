@@ -29,16 +29,29 @@
                         <tr>
                             <!-- <th scope="row">1</th> -->
                             <td style="height: 50px;">
-                                <img class="rounded" style="height: 30px; width: 30px;" src="assets\images\avatars\{{participant.avatar}}.jpg"> {{participant.name}}
+                                <img class="rounded" style="height: 30px; width: 30px;" src="assets\images\avatars\{{participant.avatar}}thumbnail.jpg"> {{participant.name}}
                             </td>
                             <td style="height: 50px;" class="d-flex justify-content-end">
-                                <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="editParticipant = participant"></i>
-                                <i class="bi bi-trash text-danger me-2" style="cursor: pointer;" (click)="deleteParticipant(participant.id)"></i>
+                                <button 
+                                    type="button" 
+                                    class="btn btn-warning d-flex justify-content-center align-items-center" 
+                                    style="padding: 10px; border-radius: 50%; height: 20px; width: 20px;" 
+                                    (click)="editParticipant = participant"
+                                    >
+                                    <i class="ph ph-pencil text-white me-2" style="font-size: 12px;"></i>
+                                </button>
+                                <button
+                                    type="button" 
+                                    class="btn btn-primary d-flex justify-content-center align-items-center" 
+                                    style="padding: 10px; border-radius: 50%; height: 20px; width: 20px;" 
+                                    (click)="deleteParticipant(participant.id)"
+                                    >
+                                    <i class="bi bi-trash text-danger me-2" style="font-size: 16px;"></i>
+                                </button>
+                                <!-- <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="editParticipant = participant"></i>
+                                <i class="bi bi-trash text-danger me-2" style="cursor: pointer;" (click)="deleteParticipant(participant.id)"></i> -->
                             </td>
                         </tr>
-                        
-                        <!-- <button type="button" class="btn btn-danger" (click)="deleteParticipant(participant.id)">Löschen</button>
-                        <button type="button" class="btn btn-success" (click)="initializeModal(participant.id)">Editieren</button> -->
                     } @empty {
                         Empty
                     }

@@ -1,37 +1,33 @@
 <div class="card mt-2 shadow-sm">
     <div class="card-header">
-        <div class="row " style="height: 10px;">
-            <div class="d-flex justify-content-end gap-1">
-                <!-- ADD PARTICIPANT -->
+        <div class="row " style="height: 15px;">
+            <div class="d-flex align-items-center justify-content-end gap-2">
                 <app-add-participant (reloadData)="reloadData.emit()"></app-add-participant>
-                <button type="button" class="btn btn-danger d-flex justify-content-center align-items-center" style="padding: 10px; border-radius: 50%; height: 20px; width: 20px;" (click)="showElementChange.emit(false)">
-                    <i class="ph ph-x" style="font-size: 16px;"></i>
+                <div class="vr"></div>
+                <button type="button" class="btn btn-danger d-flex justify-content-center align-items-center" style="padding: 8px; border-radius: 50%; height: 15px; width: 15px;" (click)="showElementChange.emit(false)">
+                    <i class="ph ph-x" style="font-size: 14px;"></i>
                 </button>
-                <!-- <i class="bi bi-x-lg" style="cursor: pointer;" ></i> -->
             </div>
         </div>
         <div class="row d-flex align-items-center">
             <div class="col-8">
                 <h4 class="p-3">Teilnehmer</h4>
             </div>
-            
             <div class="col-4">
-                <div class="row d-flex align-items-center me-2">
+                <div class="row d-flex align-items-center justify-content-end me-2">
                     <select class="form-select form-select-sm" aria-label="Small select example" (change)="addTourParticipant($event)">
-                        <option selected>Teilnehmer hinzufügen</option>
+                        <option selected>Teilnehmer wählen</option>
                         @for (participant of participants; track participant.name) {
+                            @if (!isParticipantInTour(participant.id)) {
                                 <option [value]="participant.id">{{ participant.name }}</option>
-                            } @empty {
-                                <li>There are no items.</li>
                             }
+                        } @empty {
+                            <li>There are no items.</li>
+                        }
                     </select>
                 </div>
-                <!-- SELECT BOX -->
-                
             </div>
         </div>
-       
-        
     </div>
     
     <div class="card-body mx-2 mb-2">
@@ -40,7 +36,7 @@
                 <div ngbAccordionItem [collapsed]="true">
                     <h2 ngbAccordionHeader>
                         <button ngbAccordionButton>
-                            <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}.jpg">
+                            <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg">
                             {{participantsMap[participant.id].name}}
                             <!-- SHOW BURDEN COUNT -->
                         </button>
@@ -63,7 +59,6 @@
                                     }
                                 </ol>
                             </ng-template>
-                            
                         </div>
                     </div>
                 </div>

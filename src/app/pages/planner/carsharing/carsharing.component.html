@@ -1,24 +1,36 @@
+<app-message-box ></app-message-box>
+
 <div class="card mt-2 shadow-sm">
     <div class="card-header">
-        <div class="d-flex justify-content-end">
-            <i class="bi bi-x-lg" style="cursor: pointer;" (click)="showElementChange.emit(false)"></i>
+        <div class="row " style="height: 15px;">
+            <div class="d-flex align-items-center justify-content-end gap-2">
+                <button type="button" class="btn btn-danger d-flex justify-content-center align-items-center" style="padding: 8px; border-radius: 50%; height: 15px; width: 15px;" (click)="showElementChange.emit(false)">
+                    <i class="ph ph-x" style="font-size: 14px;"></i>
+                </button>
+            </div>
         </div>
-        <h4 class="p-3">Fahrgemeinschaft</h4>
-        <!-- <select class="form-select form-select-sm" aria-label="Small select example" (change)="setNumberOfCars($event)">
-            <option selected>Gepäck hinzufügen</option>
-            <option selected>Gepäck hinzufügen</option>
-            
-        </select> -->
-        <div class="mb-3">
-            <label for="exampleFormControlInput1" class="form-label">Anzahl</label>
-            <input type="number" class="form-control" id="exampleFormControlInput1" [(ngModel)]="carCount" (change)="setCarCount()">
+        <div class="row d-flex align-items-center">
+            <div class="col-8">
+                <h4 class="p-3">Fahrgemeinschaft</h4>
+            </div>
+            <div class="col-4">
+                <div class="row d-flex align-items-center justify-content-end me-2">
+                    <!-- <label for="exampleFormControlInput1" class="form-label">Anzahl</label> -->
+                    <div class="input-group mb-3">
+                        <button class="btn btn-outline-secondary d-flex align-items-center" type="button" (click)="setCarCount('increment')"><i class="ph ph-plus"></i></button>
+                        <button class="btn btn-outline-secondary d-flex align-items-center" type="button" (click)="setCarCount('decrement')"><i class="ph ph-minus"></i></button>
+                        <input type="number" [readOnly]="true" class="form-control form-control-sm" id="exampleFormControlInput1" [(ngModel)]="carCount">
+                    </div>
+                    
+                </div>
+            </div>
         </div>
     </div>
     <div class="card-body">
         <div class="p-2 border-1 surface-border border-round w-15rem">
             @for (participant of tourParticipants; track participant; let  i = $index) {
                 <span class="badge text-bg-primary me-1 py-1" style="cursor: pointer;" pDraggable (onDragStart)="dragStart(participant.id)" (onDragEnd)="dragEnd()">
-                    <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}.jpg">
+                    <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg">
                     {{participantsMap[participant.id].name}}
                 </span>
             }
@@ -27,20 +39,27 @@
             <div class="p-2 border-1 surface-border border-round w-15rem" pDroppable (onDrop)="drop(i)">
                 <p class="text-center surface-border border-bottom-1">Auto {{i + 1}}</p>
                 @if (tourCars) {
-                    <div class="card" style="height: 100px;">
+                    <div class="card">
                         <div>
                             @if (tourCars[i].passengers.length > 0) {
-                                @for (passenger of tourCars[i].passengers; track passenger; let i = $index) {
-                                    <img 
-                                        class="rounded rounded-pill m-2" 
-                                        style="height: 50px; width: auto;" 
-                                        src="assets\images\avatars\{{participantsMap[passenger.valueOf()].avatar}}.jpg" 
-                                        ngbTooltip="{{participantsMap[passenger.valueOf()].name}}"
-                                    >
-                                }
+                                <ul class="list-group">
+                                    @for (passenger of tourCars[i].passengers; track passenger; let i = $index) {
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <img 
+                                                class="rounded rounded-pill m-2" 
+                                                style="height: 20px; width: auto;" 
+                                                src="assets\images\avatars\{{participantsMap[passenger.valueOf()].avatar}}thumbnail.jpg" 
+                                                ngbTooltip="{{participantsMap[passenger.valueOf()].name}}"
+                                            >
+                                            <span>{{participantsMap[passenger.valueOf()].name}}</span>
+                                        </li>
+                                    }
+                                </ul>
                             }
                             @else {
-                                Teilnehmer hier hinzufügen / droppen
+                                <div class="border-1 m-4 rounded d-flex align-items-center justify-content-center" style="border: dashed; height: 50px;">
+                                    <i class="ph ph-plus fs-5"></i>
+                                </div>
                             }
                         </div>
                     </div>

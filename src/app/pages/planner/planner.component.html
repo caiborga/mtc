@@ -1,3 +1,5 @@
+<app-message-box ></app-message-box>
+
 @if (!loading) {
 
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
@@ -9,6 +11,7 @@
     <ng-container>
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-end gap-2" style="height: 40px;">
+
                 <i class="bi bi-cup-hot" style="cursor: pointer;" (click)="openModal(content)"></i>
                 <i *ngIf="!tableView" class="ph ph-rows fs-5" style="cursor: pointer;" (click)="tableView ? tableView = false : tableView = true"></i>
                 <i *ngIf="tableView" class="ph ph-columns fs-5" style="cursor: pointer;" (click)="tableView ? tableView = false : tableView = true"></i>
@@ -126,7 +129,7 @@
             @if (showParticipantsBool) {
                 <div [ngClass]="tableView ? 'col' : ''">
                     <app-planner-participants
-                        (loadData)="getTourData(tourID)"
+                        (reloadData)="getTourData(tourID)"
                         [participants] = "participants"
                         [participantsMap] ="participantsMap"
                         [thingsMap] = "thingsMap"
@@ -160,6 +163,7 @@
             @if (showCarSharingBool) {
                 <div [ngClass]="tableView ? 'col' : ''">
                     <app-carsharing
+                        (showMessageBox) = "openMessageBox($event)"
                         [tourCars] = "tourCars"
                         [tourID] = "tourID"
                         [tourParticipants]= "tourParticipants"

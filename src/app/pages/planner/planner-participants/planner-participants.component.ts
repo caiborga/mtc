@@ -2,9 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AddParticipantComponent } from '../../../shared/add-participant/add-participant.component';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCollapseModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { TourService } from '../../../services/tour.service';
+import { TourService } from '../../../core/services/tour.service';
 import { Thing } from '../planner-things/things.component';
-import { foodUnits } from '../../../models/units';
+import { foodUnits } from '../../../core/models/units';
+import { participant } from '../../../core/models/participant';
 
 @Component({
   selector: 'app-planner-participants',
@@ -31,8 +32,8 @@ export class PlannerParticipantsComponent {
     ) {}
 
 	ngOnInit(){
-		console.log("tourThings", this.tourThings)
-		console.log("thingsMap", this.thingsMap)
+		console.log("participants", this.participants)
+		console.log("tourParticipants", this.tourParticipants)
 	}
 
   	addTourParticipant(inputData: any) {
@@ -73,4 +74,13 @@ export class PlannerParticipantsComponent {
         return `<b>${persons * dailyRation * perPerson}</b> ${unit} ${thingName}`
         
     }
+
+	isParticipantInTour(participantID: number) {
+		for ( let tourParticipant of this.tourParticipants) {
+			if ( participantID == tourParticipant.id) {
+				return true
+			}
+		}
+		return false
+	}
 }

@@ -2,10 +2,10 @@ import { Component, EventEmitter, inject, Input, OnChanges, Output, TemplateRef,
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { TourService } from '../../../services/tour.service';
+import { TourService } from '../../../core/services/tour.service';
 import { UnitPickerComponent } from '../../../shared/unit-picker/unit-picker.component';
 import { CategoryData } from '../things.component';
-import { foodUnits, Unit } from '../../../models/units';
+import { foodUnits, Unit } from '../../../core/models/units';
 import { AddThingComponent } from '../../../shared/add-thing/add-thing.component';
 
 @Component({

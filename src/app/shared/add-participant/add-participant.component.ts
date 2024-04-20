@@ -2,7 +2,7 @@ import { Component, EventEmitter, inject, Input, Output, TemplateRef, ViewChild 
 import { FormGroup, FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TourService } from '../../services/tour.service';
+import { TourService } from '../../core/services/tour.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -55,7 +55,7 @@ export class AddParticipantComponent {
         .toPromise()
         .then((response) => {
             this.participants = response;
-            this.reloadData.emit();
+            this.reloadData.emit()
             console.log('Teilnehmer hinzufügen- success', this.participants);
         })
         .catch((error) => {

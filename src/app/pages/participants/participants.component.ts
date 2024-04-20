@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TourService } from '../../services/tour.service';
+import { TourService } from '../../core/services/tour.service';
 import { MessageBoxComponent } from '../../shared/message-box/message-box.component';
 import { RouterLink } from '@angular/router';
 import { AddParticipantComponent } from '../../shared/add-participant/add-participant.component';

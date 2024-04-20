@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 import { CategoryData } from '../../pages/things/things.component';
-import { TourService } from '../../services/tour.service';
+import { TourService } from '../../core/services/tour.service';
 import { UnitPickerComponent } from '../unit-picker/unit-picker.component';
 
 @Component({
