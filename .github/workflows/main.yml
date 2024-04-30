@@ -24,12 +24,16 @@ jobs:
         run: npm install
 
       - name: Build Angular app
-        run: npm run build -- --prod
+        run: |
+          npm run build -- --prod
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "Build failed with exit code $exit_code"
+            exit $exit_code
+          fi
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
           name: dist
           path: dist
-
-      # Add other steps for testing or deployment as needed
