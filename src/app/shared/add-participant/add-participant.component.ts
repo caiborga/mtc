@@ -55,13 +55,13 @@ export class AddParticipantComponent {
         .toPromise()
         .then((response) => {
             this.participants = response;
-            this.reloadData.emit()
             console.log('Teilnehmer hinzufügen- success', this.participants);
         })
         .catch((error) => {
             this.loadingData = false;
             console.error('Teilnehmer hinzufügen- error', error);
         });
+        this.reloadData.emit()
     }
 
     generateAvatarNumber(): number {

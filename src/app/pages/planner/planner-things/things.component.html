@@ -1,23 +1,11 @@
 <div class="card mt-2 shadow-sm">
     <div class="card-header">
-        <div class="row " style="height: 15px;">
-            <div class="d-flex align-items-center justify-content-end gap-2">
-                <app-add-thing 
-                    (reloadData)="reloadData.emit();">
-                </app-add-thing>
-                <div class="vr"></div>
-                <button type="button" class="btn btn-danger d-flex justify-content-center align-items-center" style="padding: 8px; border-radius: 50%; height: 15px; width: 15px;" (click)="showElementChange.emit(false)">
-                    <i class="ph ph-x" style="font-size: 14px;"></i>
-                </button>
-                <!-- <i class="bi bi-x-lg" style="cursor: pointer;" (click)="showElementChange.emit(false)"></i> -->
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-start gap-2">
+                <h5>Gepäck</h5>
             </div>
-        </div>
-        <div class="row d-flex align-items-center">
-            <div class="col-8">
-                <h4 class="p-3">Gepäck</h4>
-            </div>
-            <div class="col-4">
-                <div class="row d-flex align-items-center justify-content-end me-2">
+            <div class="col d-flex align-items-center justify-content-end gap-2">
+                <div class="input-group" style="min-width: 250px; max-width: 50%;">
                     <select class="form-select form-select-sm" aria-label="Small select example" (change)="addTourThing($event)">
                         <option selected>Gepäck hinzufügen</option>
                         @for (thing of things; track thing.name) {
@@ -26,7 +14,14 @@
                                 <li>There are no items.</li>
                             }
                     </select>
+                    <button class="btn btn-outline-secondary btn-sm" type="button" id="button-addon2">
+                        <app-add-thing 
+                            (reloadData)="reloadData.emit();">
+                        </app-add-thing>
+                    </button>
                 </div>
+                <div class="vr"></div>
+                <i class="ph ph-x" style="cursor: pointer;" (click)="showElementChange.emit(false)"></i>
             </div>
         </div>
     </div>

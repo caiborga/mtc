@@ -38,6 +38,7 @@ export class PlannerParticipantsComponent {
 
   	addTourParticipant(inputData: any) {
 		console.log("participantID", inputData.target.value)
+
 		let participantID = inputData.target.value
 		let participant = {
 			id: Number(participantID),
@@ -45,6 +46,7 @@ export class PlannerParticipantsComponent {
 			end: this.tourData.end,
 			burdens: []
 		}
+		
 		this.tourParticipants.push(participant)
 		console.log("tourParticipants", this.tourParticipants)
 

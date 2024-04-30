@@ -5,7 +5,7 @@ import { DatePickerComponent } from '../../shared/date-picker/date-picker.compon
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule, FormBuilder } from '@angular/forms';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgbCollapseModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule, NgbOffcanvas, NgbDropdownModule  } from '@ng-bootstrap/ng-bootstrap';
 import { RouterLink } from '@angular/router';
 
 import { ActivatedRoute } from '@angular/router';
@@ -14,7 +14,7 @@ import { AddParticipantComponent } from '../../shared/add-participant/add-partic
 import { AddThingComponent } from '../../shared/add-thing/add-thing.component';
 import { PlannerParticipantsComponent } from './planner-participants/planner-participants.component';
 import { PlannerThingsComponent } from './planner-things/things.component';
-import { CarsharingComponent } from './carsharing/carsharing.component';
+import { CarsharingComponent } from './planner-carsharing/carsharing.component';
 import { Message, MessageBoxComponent } from '../../shared/message-box/message-box.component';
 
 
@@ -149,6 +149,7 @@ interface Thing {
         MessageBoxComponent,
         NgbAccordionModule,
         NgbCollapseModule,
+        NgbDropdownModule,
         ReactiveFormsModule,
         RouterLink,
         PlannerParticipantsComponent,
@@ -161,7 +162,7 @@ export class PlannerComponent {
 
     @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
 
-    isCollapsed = true;
+    isCollapsed = false;
     loading: boolean = false;
     tableView = false;
     tourData: any;

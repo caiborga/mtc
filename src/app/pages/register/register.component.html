@@ -1,6 +1,16 @@
 <div class="form-floating mb-3">
-    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [(ngModel)]="name">
+    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" [(ngModel)]="name" [disabled]="link != ''">
     <label for="floatingInput">Gruppenname</label>
 </div>
 
-<button type="button" class="btn btn-primary" (click)="registerGroup()">Gruppe anlegen</button>
+@if(link != '') {
+    <div class="input-group mb-3">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="floatingInputGroup1" [readOnly]="true" [value]="link">
+            <label for="floatingInputGroup1">Gruppen-Link</label>
+        </div>
+        <button type="button" class="btn btn-primary"><i class="ph ph-copy" (click)="copyToClipboard()"></i></button>
+    </div>
+}
+
+<button type="button" class="btn btn-primary" (click)="registerGroup()" [disabled]="link != ''">Gruppe anlegen</button>

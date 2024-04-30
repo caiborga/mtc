@@ -73,6 +73,7 @@ export class ThingsComponent {
             console.log('this.things', this.things);
         })
         .catch((error) => {
+            this.defineCategories()
             console.error('getThings - error', error);
         });
     }

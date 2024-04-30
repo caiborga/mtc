@@ -2,25 +2,27 @@
 
 <div class="card mt-2 shadow-sm">
     <div class="card-header">
-        <div class="row " style="height: 15px;">
-            <div class="d-flex align-items-center justify-content-end gap-2">
-                <button type="button" class="btn btn-danger d-flex justify-content-center align-items-center" style="padding: 8px; border-radius: 50%; height: 15px; width: 15px;" (click)="showElementChange.emit(false)">
-                    <i class="ph ph-x" style="font-size: 14px;"></i>
-                </button>
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-start gap-2">
+                <h5>Fahrgemeinschaft</h5>
+            </div>
+            <div class="col d-flex align-items-center justify-content-end gap-2">
+                <div class="input-group" style="min-width: 250px; max-width: 50%;">
+                    <input type="number" [readOnly]="true" class="form-control form-control-sm" id="exampleFormControlInput1" [(ngModel)]="carCount">
+                    <button class="btn btn-outline-secondary btn-sm align-items-center" type="button" (click)="setCarCount('increment')"><i class="ph ph-plus"></i></button>
+                    <button class="btn btn-outline-secondary btn-sm align-items-center" type="button" (click)="setCarCount('decrement')"><i class="ph ph-minus"></i></button>
+                </div>
+                <div class="vr"></div>
+                <i class="ph ph-x" style="cursor: pointer;" (click)="showElementChange.emit(false)"></i>
             </div>
         </div>
         <div class="row d-flex align-items-center">
             <div class="col-8">
-                <h4 class="p-3">Fahrgemeinschaft</h4>
             </div>
             <div class="col-4">
                 <div class="row d-flex align-items-center justify-content-end me-2">
                     <!-- <label for="exampleFormControlInput1" class="form-label">Anzahl</label> -->
-                    <div class="input-group mb-3">
-                        <button class="btn btn-outline-secondary d-flex align-items-center" type="button" (click)="setCarCount('increment')"><i class="ph ph-plus"></i></button>
-                        <button class="btn btn-outline-secondary d-flex align-items-center" type="button" (click)="setCarCount('decrement')"><i class="ph ph-minus"></i></button>
-                        <input type="number" [readOnly]="true" class="form-control form-control-sm" id="exampleFormControlInput1" [(ngModel)]="carCount">
-                    </div>
+                    
                     
                 </div>
             </div>

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, NgModel } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
@@ -11,12 +12,12 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { AuthService } from '../../core/services/auth-service.service';
-
+import { NgbDropdownModule  } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [DatePickerComponent, FormsModule, ReactiveFormsModule, RouterLink, NgbTypeaheadModule],
+    imports: [CommonModule, DatePickerComponent, FormsModule, NgbDropdownModule, ReactiveFormsModule, RouterLink, NgbTypeaheadModule],
     templateUrl: './home.component.html',
     styleUrl: './home.component.css'
 })

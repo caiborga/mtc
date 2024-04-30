@@ -2,7 +2,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 
 export const addKeyInterceptor: HttpInterceptorFn = (req, next) => {
 
-    console.log("interceptor start", req)
+    //console.log("interceptor start", req)
     if (req.url.startsWith('http://localhost:3000/api/')) {
         // Den Wert aus dem Local Storage abrufen (ersetze 'meinSchlüssel' durch den tatsächlichen Schlüssel)
         const token = localStorage.getItem('key');
@@ -14,7 +14,7 @@ export const addKeyInterceptor: HttpInterceptorFn = (req, next) => {
                     Authorization: token
                 }
             });
-            console.log("interceptor result", authReq)
+            //console.log("interceptor result", authReq)
             return next(authReq);
         }
     }

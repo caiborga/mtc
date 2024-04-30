@@ -1,10 +1,18 @@
 <div class="card">
-    <div class="card-header d-flex justify-content-between">
-        <h2>{{data.title}}</h2>
-        <app-add-thing
-            (reloadData)="reloadData.emit();"
-            [data]="data">
-        </app-add-thing>
+    <div class="card-header">
+        <div class="row d-flex align-items-center">
+            <div class="col">
+                <h5>{{data.title}}</h5>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <button type="button" class="btn btn-primary">
+                    <app-add-thing
+                        (reloadData)="reloadData.emit();"
+                        [data]="data">
+                    </app-add-thing>
+                </button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <table class="table table-hover">
@@ -16,7 +24,6 @@
                     @if (data.relevantColumns.unit){<th class="col-md-3">Einheit</th>}
                     @if (data.relevantColumns.weight){<th class="col-md-3">Gewicht</th>}
                     <th></th>
-
                 </tr>
             </thead>
             <tbody>
@@ -33,9 +40,10 @@
                             </td>
                         </tr>
                         }
-                    
                 } @empty {
-                    Empty
+                    <div class="m-2">
+                        Bisher keine Einträge
+                    </div>
                 }
             </tbody>
         </table>

@@ -4,6 +4,7 @@ import { TourService } from '../../core/services/tour.service';
 import { AuthService } from '../../core/services/auth-service.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { Router } from '@angular/router';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 interface Response {
     message: string,
@@ -19,22 +20,31 @@ interface Response {
 })
 export class RegisterComponent {
     name: string = ''
+    link: string = ''
 
     constructor(
         private authService: AuthService,
+        private clipboard: Clipboard,
         private router: Router,
         private tourService: TourService,
         private localStorage: LocalStorageService
     ) {}
 
+    copyToClipboard() {
+        this.clipboard.copy(this.link);
+    }
+
     registerGroup() {
-        this.tourService.post('register', this.name)
+        let data = { 
+            name: this.name
+        }
+        this.tourService.post('register', data)
         .toPromise()
         .then((response: any) => {
             console.log('registerGroup - success', response.message);
             this.authService.login()
             this.localStorage.setItem('key', response.key)
-            this.router.navigate(['/home']);
+            this.link = `localhost:4200/${response.key}/`
         })
         .catch((error) => {
             console.error('registerGroup - error', error);

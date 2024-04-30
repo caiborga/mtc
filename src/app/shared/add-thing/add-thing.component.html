@@ -1,6 +1,4 @@
-<button type="button" class="btn btn-primary d-flex justify-content-center align-items-center" style="padding: 8px; border-radius: 50%; height: 15px; width: 15px;" (click)="initializeModal(); open(content)">
-    <i class="ph ph-plus" style="font-size: 14px;"></i>
-</button>
+<i class="ph ph-plus" (click)="initializeModal(); open(content)"></i>
 
 <ng-template #content let-modal>
 	<div class="modal-header">

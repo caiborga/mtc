@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
@@ -8,7 +9,7 @@ import { foodUnits, Unit } from '../../core/models/units';
 @Component({
     selector: 'app-unit-picker',
     standalone: true,
-    imports: [FormsModule, NgbTypeaheadModule],
+    imports: [CommonModule, FormsModule, NgbTypeaheadModule],
     templateUrl: './unit-picker.component.html',
     styleUrl: './unit-picker.component.css'
 })
@@ -21,6 +22,7 @@ export class UnitPickerComponent {
         id: 0,
         unit: '',
     }
+    units = foodUnits
 
     search: OperatorFunction<string, readonly { id: number, unit: string }[]> = (text$: Observable<string>) =>
     text$.pipe(
@@ -41,9 +43,10 @@ export class UnitPickerComponent {
         })
     );
 
-    setUnit() {
-        console.log("this.selectedunit", this.selectedUnit)
-        this.unitOutput.emit(this.selectedUnit.id);
+    setUnit(event: any) {
+        let unitID = event.target.value
+        console.log("unitID", unitID)
+        this.unitOutput.emit(unitID);
     }
 		
 	formatter = (x: { unit: string }) => x.unit;

@@ -6,12 +6,21 @@
 </nav>
 
 <div class="card">
-    <div class="card-header d-flex justify-content-between">
-        <h2>Teilnehmer</h2>
-        <app-add-participant
-            (reloadData)="getParticipants()"
-            [editParticipantInput]="editParticipant">
-        </app-add-participant>
+    <div class="card-header">
+        <div class="row d-flex align-items-center">
+            <div class="col d-flex justify-content-start">
+                <h5>Teilnehmer</h5>
+            </div>
+            <div class="col d-flex justify-content-end">
+                <button type="button" class="btn btn-primary">
+                    <app-add-participant
+                        (reloadData)="getParticipants()"
+                        [editParticipantInput]="editParticipant">
+                    </app-add-participant>
+                </button>
+            </div>
+        </div>
+       
     </div>
 
     @if(!loadingData) {
@@ -32,7 +41,7 @@
                                 <img class="rounded" style="height: 30px; width: 30px;" src="assets\images\avatars\{{participant.avatar}}thumbnail.jpg"> {{participant.name}}
                             </td>
                             <td style="height: 50px;" class="d-flex justify-content-end">
-                                <button 
+                                <!-- <button 
                                     type="button" 
                                     class="btn btn-warning d-flex justify-content-center align-items-center" 
                                     style="padding: 10px; border-radius: 50%; height: 20px; width: 20px;" 
@@ -47,13 +56,15 @@
                                     (click)="deleteParticipant(participant.id)"
                                     >
                                     <i class="bi bi-trash text-danger me-2" style="font-size: 16px;"></i>
-                                </button>
-                                <!-- <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="editParticipant = participant"></i>
-                                <i class="bi bi-trash text-danger me-2" style="cursor: pointer;" (click)="deleteParticipant(participant.id)"></i> -->
+                                </button> -->
+                                <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" (click)="editParticipant = participant"></i>
+                                <i class="bi bi-trash text-danger me-2" style="cursor: pointer;" (click)="deleteParticipant(participant.id)"></i>
                             </td>
                         </tr>
                     } @empty {
-                        Empty
+                        <div class="m-2">
+                            Bisher keine Einträge
+                        </div>
                     }
                 </tbody>
             </table>

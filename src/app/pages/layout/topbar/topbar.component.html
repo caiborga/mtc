@@ -1,5 +1,5 @@
 @if ( isAuthenticated ) {
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2">
         <a class="navbar-brand">Pack ma's</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -16,10 +16,16 @@
                     <a class="nav-link" style="cursor: pointer;" routerLink="/participants" routerLinkActive="active">Teilnehmer</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" style="cursor: pointer;" (click)="logout()">Logout {{groupKey}}</a>
+                    
                 </li>
-                
             </ul>
         </div>
+        <form class="form-inline">
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-outline-secondary me-2" placement="left" ngbTooltip="Eingeloggt als Gruppe {{group.name}} mit ID {{group.key}}" (click)="logout()">
+                    <i class="ph ph-sign-out text-white"></i> {{group.name}}
+                </button>
+            </div>
+        </form>
     </nav>
 }

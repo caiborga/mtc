@@ -1,26 +1,54 @@
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb m-3">
-        <li class="breadcrumb-item active">Home</li>
-    </ol>
-</nav>  
-
-
 @for (tour of tours; track $index) {
 
     <div class="card text-start mt-4" >
         <div class="card-header">
-            {{tour.tourData.name}}
+            <div class="row d-flex align-items-center">
+                <div class="col d-flex justify-content-start">
+                    <h4>{{tour.tourData.name}}</h4>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <!-- MENU -->
+                    <div ngbDropdown class="d-inline-block">
+                        <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+                            <i class="ph ph-list"></i>
+                        </button>
+                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                            <!-- EDIT -->
+                            <button ngbDropdownItem routerLink="/planner/{{tour.id}}" routerLinkActive="active">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" ></i>
+                                    <span>Bearbeiten</span>
+                                </div>
+                            </button>
+                            <!-- DELETE -->
+                            <button ngbDropdownItem (click)="deleteTour(tour.id)">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-trash text-danger me-2" style="cursor: pointer;"></i>
+                                    <span>Löschen</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.tourData.name}}</h5>
-            <p class="card-text">{{tour.tourData.start}} bis {{tour.tourData.end}} </p>
+            <p class="card-text">{{tour.tourData.start | date: 'dd.MM.YYYY'}} bis {{tour.tourData.end | date: 'dd.MM.YYYY'}} </p>
             <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
-            <button (click)="deleteTour(tour.id)">Löschen</button>
         </div>
     </div>
 }
 
-<button type="button" class="btn btn-primary" (click)="open(tourModal)">Neue Tour</button>
+<div class="d-flex justify-content-center m-3">
+    <button type="button" class="btn btn-primary" (click)="open(tourModal)">
+        <div class="d-flex align-items-center gap-2">
+            <i class="ph ph-plus"></i> 
+            <span>Neue Tour</span>
+        </div>
+        
+    </button>
+</div>
 
 
 <ng-template #tourModal let-modal>
@@ -31,10 +59,17 @@
 	<div class="modal-body">
         <form [formGroup]="tourForm">
 			<div class="mb-3">
+                <!-- NAME -->
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
                     <label for="floatingInput">Name</label>
                 </div>
+                <!-- NAME -->
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                    <label for="floatingInput">Ziel</label>
+                </div>
+                <!-- PERIOD -->
                 <app-date-picker
                     (startDatePicked)="this.tourForm.get('start')!.setValue($event.toLocaleDateString())"
                     (endDatePicked)="this.tourForm.get('end')!.setValue($event.toLocaleDateString())"
