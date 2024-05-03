@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.13'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular app
+        run: |
+          npm run build -- --configuration production
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "Build failed with exit code $exit_code"
+            exit $exit_code
+          fi
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
