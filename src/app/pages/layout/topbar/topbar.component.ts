@@ -7,7 +7,6 @@ import { TourService } from '../../../core/services/tour.service';
 import { Group } from '../../../core/models/group';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 
-
 @Component({
     selector: 'app-topbar',
     standalone: true,
@@ -39,6 +38,14 @@ export class TopbarComponent implements OnDestroy {
                 }
             }
         );
+    }
+
+    ngOnInit() {
+        this.group.key = this.localStorageService.getItem('key')
+        if ( this.group.key ) {
+            this.isAuthenticated = true
+            this.getGroupName()
+        }
     }
 
     ngOnDestroy() {

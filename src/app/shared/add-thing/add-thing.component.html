@@ -8,13 +8,15 @@
 	<div class="modal-body">
         <form [formGroup]="thingForm">
 			<div class="mb-3">
+                <!-- CATEGORY -->
                 @if (data.relevantColumns.category) {
                     <select class="form-select mb-3" style="height: 55px" formControlName="category">
                         <option value="food">Nahungsmittel</option>
                         <option value="consumables">Verbrauchsmaterial</option>
-                        <option value="items">Gegenständeoption>
+                        <option value="items">Gegenstände</option>
                     </select>
                 }
+                <!-- NAME -->
                 @if (data.relevantColumns.name) {
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
@@ -22,12 +24,14 @@
                     </div>
                 }
                 <div class="row">
+                    <!-- PERPERSON -->
                     @if (data.relevantColumns.perPerson) {
                         <div class="form-floating mb-3 col-6">
-                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson">
+                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson" (change)="setWeight()">
                             <label for="floatingInput">Pro Kopf pro Tag</label>
                         </div>
                     }
+                    <!-- UNIT -->
                     @if (data.relevantColumns.unit) {
                         <div class="mb-3 col-6">
                             <app-unit-picker 
@@ -37,9 +41,10 @@
                         </div>
                     }
                 </div>
+                <!-- WEIGHT -->
                 @if (data.relevantColumns.weight) {
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="weight">
+                        <input type="text" class="form-control" formControlName="weight">
                         <label for="floatingInput">Gewicht</label>
                     </div>
                 }

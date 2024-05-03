@@ -1,35 +1,5 @@
-<!-- <input
-    class="form-control"
-    id="typeahead-prevent-manual-entry"
-    type="text"
-    (change)="setUnit()"
-    [editable]="false"
-    [inputFormatter]="formatter"
-    [ngbTypeahead]="search"
-    [ngModelOptions]="{standalone: true}"
-    [placeholder]="unitInput"
-    [resultFormatter]="formatter"
-    [(ngModel)]="selectedUnit"
-/> -->
-
-<!-- <div class="form-floating">
-    <input
-    class="form-control"
-    id="typeahead-prevent-manual-entry"
-    type="text"
-    (change)="setUnit()"
-    [editable]="false"
-    [inputFormatter]="formatter"
-    [ngbTypeahead]="search"
-    [ngModelOptions]="{standalone: true}"
-    [placeholder]="unitInput"
-    [resultFormatter]="formatter"
-    [(ngModel)]="selectedUnit"
-    />
-    <label for="floatingInput">Einheit</label>
-  </div> -->
-
 <select class="form-select" aria-label="Default select example" style="height: 58px;" (change)="setUnit($event)">
+    <option disabled selected value="">Einheit</option>
     @for (thing of units | keyvalue; track thing) {
         <option value="{{thing.value.id}}">{{thing.value.unit}}</option>
     }

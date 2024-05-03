@@ -19,6 +19,7 @@ export class UnitPickerComponent {
     @Input() unitInput: number = 0;
     @Output() unitOutput = new EventEmitter<number>();
     selectedUnit: Unit = { 
+        factor: 0,
         id: 0,
         unit: '',
     }

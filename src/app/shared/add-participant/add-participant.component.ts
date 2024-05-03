@@ -43,10 +43,6 @@ export class AddParticipantComponent {
         }
     }
 
-	openModal(content: TemplateRef<any>) {
-		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
-	}
-
     addParticipant() {
         let avatar = this.generateAvatarNumber()
         this.participantForm.get('avatar')?.setValue(String(avatar))
@@ -55,19 +51,13 @@ export class AddParticipantComponent {
         .toPromise()
         .then((response) => {
             this.participants = response;
+            this.reloadData.emit()
             console.log('Teilnehmer hinzufügen- success', this.participants);
         })
         .catch((error) => {
             this.loadingData = false;
             console.error('Teilnehmer hinzufügen- error', error);
         });
-        this.reloadData.emit()
-    }
-
-    generateAvatarNumber(): number {
-        let min = 1
-        let max = 16
-        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     editParticipant() {
@@ -83,4 +73,25 @@ export class AddParticipantComponent {
             console.error('Edit participant - error', error);
         });
     }
+
+    generateAvatarNumber(): number {
+        let min = 1
+        let max = 16
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    resetForm() {
+        this.editParticipantInput = false;
+        this.participantForm.setValue(
+            {
+                avatar: '',
+                id: '',
+                name: ''
+            }
+        )
+    }
+
+    openModal(content: TemplateRef<any>) {
+		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
+	}
 }

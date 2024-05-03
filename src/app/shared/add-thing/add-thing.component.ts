@@ -2,10 +2,10 @@ import { Component, EventEmitter, inject, Input, Output, TemplateRef } from '@an
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-
 import { CategoryData } from '../../pages/things/things.component';
 import { TourService } from '../../core/services/tour.service';
 import { UnitPickerComponent } from '../unit-picker/unit-picker.component';
+import { foodUnits, Unit } from '../../core/models/units';
 
 @Component({
     selector: 'app-add-thing',
@@ -27,7 +27,7 @@ export class AddThingComponent {
         name: new FormControl(''),
         perPerson: new FormControl(null), 
         unitID: new FormControl(0),
-        weight: new FormControl(null),
+        weight: new FormControl(0),
     });
 
     thingsMap: any;
@@ -106,9 +106,19 @@ export class AddThingComponent {
         });
     }
 
-
     open(content: TemplateRef<any>) {
 		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
 	}
+
+    setWeight() {
+        
+        let unitID = this.thingForm.get('unitID')!.value
+        let perPerson = this.thingForm.get('perPerson')!.value
+        if (unitID && perPerson !== null) {
+            let factor = foodUnits[unitID].factor
+            this.thingForm.controls['weight'].setValue(factor * perPerson);
+            console.log("form", this.thingForm.value)
+        }
+    }
 
 }
