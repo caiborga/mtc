@@ -8,7 +8,7 @@ import { Injectable } from '@angular/core';
 })
 export class TourService {
 
-    private apiUrl: string = 'https://packmas-c545d34ac462.herokuapp.com/';
+    private apiUrl: string = 'http://localhost:3400/api';
 
     constructor(private httpClient: HttpClient) { }
 

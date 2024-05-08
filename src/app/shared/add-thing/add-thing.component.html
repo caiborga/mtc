@@ -1,4 +1,4 @@
-<i class="ph ph-plus" (click)="initializeModal(); open(content)"></i>
+<i [class]="symbol" style="cursor: pointer;"></i>
 
 <ng-template #content let-modal>
 	<div class="modal-header">
@@ -23,36 +23,35 @@
                         <label for="floatingInput">Name</label>
                     </div>
                 }
-                <div class="row">
-                    <!-- PERPERSON -->
-                    @if (data.relevantColumns.perPerson) {
-                        <div class="form-floating mb-3 col-6">
-                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson" (change)="setWeight()">
-                            <label for="floatingInput">Pro Kopf pro Tag</label>
-                        </div>
-                    }
-                    <!-- UNIT -->
-                    @if (data.relevantColumns.unit) {
-                        <div class="mb-3 col-6">
-                            <app-unit-picker 
-                                (unitOutput)="thingForm.controls['unitID'].setValue($event);" 
-                                [unitInput]="thingForm.controls['unitID'].value!">
-                            </app-unit-picker>
-                        </div>
-                    }
-                </div>
-                <!-- WEIGHT -->
+                <!-- UNIT -->
+                @if (data.relevantColumns.unit) {
+                    <div class="mb-3">
+                        <app-unit-picker 
+                            (unitOutput)="thingForm.controls['unit'].setValue($event); setWeight()" 
+                            [unitInput]="thingForm.controls['unit'].value!">
+                        </app-unit-picker>
+                    </div>
+                }
+                <!-- PERPERSON -->
+                @if (data.relevantColumns.perPerson) {
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson" (change)="setWeight()">
+                        <label for="floatingInput">Pro Kopf pro Tag</label>
+                    </div>
+                }
+
+                <!-- WEIGHT --> 
                 @if (data.relevantColumns.weight) {
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" formControlName="weight">
-                        <label for="floatingInput">Gewicht</label>
+                        <label for="floatingInput">Gewicht in kg</label>
                     </div>
                 }
 			</div>
 		</form>
 	</div>
 	<div class="modal-footer">
-		@if(selectedThingID == -1){<button type="button" class="btn btn-outline-dark" (click)="newThing(); modal.close(); initializeModal()">Speichern</button>}
-        @if(selectedThingID != -1){<button type="button" class="btn btn-outline-dark" (click)="editThing(); modal.close(); initializeModal()">Ändern</button>}
+		@if(selectedThingID == -1){<button type="button" class="btn btn-outline-dark" (click)="newThing(); modal.close(); initializeModal()" [disabled]="thingForm.invalid">Speichern</button>}
+        @if(selectedThingID != -1){<button type="button" class="btn btn-outline-dark" (click)="editThing(); modal.close(); initializeModal()" [disabled]="thingForm.invalid">Ändern</button>}
 	</div>
 </ng-template>

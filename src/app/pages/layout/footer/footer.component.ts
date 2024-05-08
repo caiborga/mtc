@@ -5,8 +5,11 @@ import { AuthService } from '../../../core/services/auth-service.service';
 import { LocalStorageService } from '../../../core/services/local-storage.service';
 import { TourService } from '../../../core/services/tour.service';
 
+import { slideInOutAnimation } from '../../../core/animations/fade';
+
 
 @Component({
+    animations: [slideInOutAnimation],
     selector: 'app-footer',
     standalone: true,
     imports: [],

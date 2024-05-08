@@ -132,8 +132,8 @@ export class HomeComponent {
             this.tours = response.tours;
             console.log('getTours - success:', this.tours);
             for (let tour in this.tours) {
-                let participants = JSON.parse(this.tours[tour].tourParticipants)
-                let tourData = JSON.parse(this.tours[tour].tourData)
+                let participants = JSON.parse(this.tours[tour].tour_participants)
+                let tourData = JSON.parse(this.tours[tour].tour_data)
                 this.tours[tour].participants = participants
                 this.tours[tour].tourData = tourData
             }

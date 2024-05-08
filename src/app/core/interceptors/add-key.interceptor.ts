@@ -3,7 +3,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 export const addKeyInterceptor: HttpInterceptorFn = (req, next) => {
 
     //console.log("interceptor start", req)
-    if (req.url.startsWith('http://localhost:3000/api/')) {
+    if (req.url.startsWith('http://localhost:3400/api/')) {
         // Den Wert aus dem Local Storage abrufen (ersetze 'meinSchlüssel' durch den tatsächlichen Schlüssel)
         const token = localStorage.getItem('key');
 
@@ -19,6 +19,6 @@ export const addKeyInterceptor: HttpInterceptorFn = (req, next) => {
         }
     }
 
-    // Wenn die Anfrage nicht mit 'http://localhost:3000/api/' beginnt oder kein Token im Local Storage vorhanden ist, führe die ursprüngliche Anfrage durch
+    // Wenn die Anfrage nicht mit 'http://localhost:3400/api/' beginnt oder kein Token im Local Storage vorhanden ist, führe die ursprüngliche Anfrage durch
     return next(req);
 };

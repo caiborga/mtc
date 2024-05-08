@@ -243,12 +243,12 @@ export class PlannerComponent {
         .then((response) => {
             this.participants = response.participants
             this.participantsMap = response.participants.reduce((obj: any, cur: any) => ({...obj, [cur.id]: cur}), {})
-            // console.log('getParticipants - success', response );
+            console.log('getParticipants - success', response );
             for (var i = 0; i < response.participants.length; i++) {
                 var id = response.participants[i].id;
                 this.participantsMap[id] = response.participants[i];
             }
-            // console.log("participantsMap", this.participantsMap)
+            console.log("participantsMap", this.participantsMap)
 
         })
         .catch((error) => {
@@ -283,15 +283,15 @@ export class PlannerComponent {
         .then((response) => {
             console.log('getTourData - success', response.tour);
 
-            this.tourCars = JSON.parse(response.tour.tourCars)
-            this.tourData = JSON.parse(response.tour.tourData)
-            this.tourParticipants = JSON.parse(response.tour.tourParticipants)
-            this.tourThings = JSON.parse(response.tour.tourThings)
+            this.tourCars = JSON.parse(response.tour.tour_cars)
+            this.tourData = JSON.parse(response.tour.tour_data)
+            this.tourParticipants = JSON.parse(response.tour.tour_participants)
+            this.tourThings = JSON.parse(response.tour.tour_things)
 
             // console.log('getTourData - tourCars', this.tourCars);
             // console.log('getTourData - tourData', this.tourData);
             // console.log('getTourData - tourParticipants', this.tourParticipants);
-            // console.log('getTourData - tourThings', this.tourThings);
+            console.log('getTourData - tourThings', this.tourThings);
             
             this.tourForm.controls.start.setValue(this.tourData.start)
             this.tourForm.controls.end.setValue(this.tourData.end)

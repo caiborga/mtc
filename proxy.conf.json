@@ -1,7 +1,7 @@
 {
     "/api/*": {
         "changeOrigin": true,
-        "target": "https://packmas-c545d34ac462.herokuapp.com/",
+        "target": "http://localhost:3400",
         "secure": false
     }
 }

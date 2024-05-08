@@ -16,7 +16,7 @@
                             <li>There are no items.</li>
                         }
                     </select>
-                    <button class="btn btn-outline-secondary btn-sm" type="button" id="button-addon2">
+                    <button class="btn btn-outline-secondary btn-sm" type="button" id="button-addon2" (click)="AddParticipantComponent.openModal()">
                         <app-add-participant (reloadData)="reloadData.emit()"></app-add-participant>
                     </button>
                 </div>
@@ -32,7 +32,7 @@
                 <div ngbAccordionItem [collapsed]="true">
                     <h2 ngbAccordionHeader>
                         <button ngbAccordionButton>
-                            <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg">
+                            <!-- <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg"> -->
                             {{participantsMap[participant.id].name}}
                             <!-- SHOW BURDEN COUNT -->
                         </button>

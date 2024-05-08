@@ -34,7 +34,7 @@
         </div>
         <div class="card-body">
             <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.tourData.name}}</h5>
-            <p class="card-text">{{tour.tourData.start | date: 'dd.MM.YYYY'}} bis {{tour.tourData.end | date: 'dd.MM.YYYY'}} </p>
+            <p class="card-text">{{tour.tourData.start }} bis {{tour.tourData.end}} </p>
             <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
         </div>
     </div>

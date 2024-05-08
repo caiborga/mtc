@@ -1,5 +1,5 @@
-import { Component, EventEmitter, inject, Input, Output, TemplateRef } from '@angular/core';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { CategoryData } from '../../pages/things/things.component';
@@ -14,20 +14,24 @@ import { foodUnits, Unit } from '../../core/models/units';
     templateUrl: './add-thing.component.html',
     styleUrl: './add-thing.component.css'
 })
+
+
 export class AddThingComponent {
 
     @Input() data: CategoryData;
+    @Input() symbol: string = 'ph ph-plus'
     @Output() reloadData = new EventEmitter();
+    @ViewChild('content') contentTemplate!: TemplateRef<any>;
 
     selectedThingID: number = -1;
 
     thingForm = new FormGroup({
         category: new FormControl(''),
         id: new FormControl(-1),
-        name: new FormControl(''),
-        perPerson: new FormControl(null), 
-        unitID: new FormControl(0),
-        weight: new FormControl(0),
+        name: new FormControl('', Validators.required),
+        perPerson: new FormControl(null, [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]), 
+        unit: new FormControl(0, Validators.required),
+        weight: new FormControl<number | null>(null, [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]),
     });
 
     thingsMap: any;
@@ -54,7 +58,26 @@ export class AddThingComponent {
     ngOnInit() {
         this.thingForm.get('category')!.setValue(this.data.category)
         this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+        for (const key in this.data.relevantColumns) {
+            if (!this.data.relevantColumns[key as keyof CategoryData["relevantColumns"]]) {
+                if (key in this.thingForm.controls) {
+                    const control = this.thingForm.get(key);
+                    if (control) {
+                        control.clearValidators();
+                    }
+                }
+            }
+        }
     }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        console.log('changes', changes)
+        if (changes['data'] ) {
+            this.data = changes['data'].currentValue
+            this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+        }
+    }
+    
 
     editThing() {
         this.tourService.put('things/'+ this.thingForm.value.id, this.thingForm.value)
@@ -76,8 +99,8 @@ export class AddThingComponent {
                 category: this.data.category,
                 id: thingID,
                 name: this.thingsMap[thingID]['name'],
-                perPerson: this.thingsMap[thingID]['perPerson'], 
-                unitID: this.thingsMap[thingID]['unitID'],
+                perPerson: this.thingsMap[thingID]['per_person'], 
+                unit: this.thingsMap[thingID]['unit_id'],
                 weight: this.thingsMap[thingID]['weight'],
             })
         } else {
@@ -87,8 +110,8 @@ export class AddThingComponent {
                 id: -1,
                 name: '',
                 perPerson: null, 
-                unitID: null,
-                weight: null,
+                unit: null,
+                weight: 0,
             })
         }
     }
@@ -106,15 +129,15 @@ export class AddThingComponent {
         });
     }
 
-    open(content: TemplateRef<any>) {
-		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
+    open() {
+		this.modalService.open(this.contentTemplate, { ariaLabelledBy: 'modal-basic-title' })
 	}
 
     setWeight() {
         
-        let unitID = this.thingForm.get('unitID')!.value
+        let unitID = this.thingForm.get('unit')!.value
         let perPerson = this.thingForm.get('perPerson')!.value
-        if (unitID && perPerson !== null) {
+        if (unitID && perPerson && !isNaN(perPerson)) {
             let factor = foodUnits[unitID].factor
             this.thingForm.controls['weight'].setValue(factor * perPerson);
             console.log("form", this.thingForm.value)

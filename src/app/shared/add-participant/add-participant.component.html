@@ -1,4 +1,6 @@
-<i class="ph ph-user-plus" style="font-size: 14px;" (click)="openModal(content)"></i>
+<app-message-box ></app-message-box>
+
+<i [class]="symbol" style="cursor: pointer;"></i>
 
 <ng-template #content let-modal>
     <div class="modal-header">
@@ -7,19 +9,21 @@
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss(); resetForm()"></button>
     </div>
     <div class="modal-body">
-        <div class="d-flex justify-content-start gap-2">
-            @if (editParticipantInput){<img class="rounded" style="height: 56px; width: auto;" src="assets\images\avatars\{{editParticipantInput.avatar}}thumbnail.jpg">}
-            <form [formGroup]="participantForm">
+        <div class="d-flex justify-content-center gap-2">
+            @if (editParticipantInput){
+                <img class="rounded" style="height: 58px; width: auto;" src="assets\images\avatars\{{editParticipantInput.avatar}}thumbnail.jpg">
+            }
+            <form [formGroup]="participantForm" class="w-100">
                 <div class="form-floating">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                    <input type="email" class="form-control w-100" id="floatingInput" placeholder="Name" formControlName="name">
                     <label for="floatingInput">Name</label>
                 </div>
             </form>
         </div>
     </div>
     <div class="modal-footer">
-        @if (this.participantForm.get('id')!.value == '') {<button type="button" class="btn btn-outline-dark" (click)="addParticipant(); modal.close(); resetForm()">Hinzufügen</button>}
-        @if (this.participantForm.get('id')!.value != '') {<button type="button" class="btn btn-outline-dark" (click)="editParticipant(); modal.close(); resetForm()">Ändern</button>}
+        @if (this.participantForm.get('id')!.value == '') {<button type="button" class="btn btn-outline-dark" (click)="addParticipant(); modal.close(); resetForm()" [disabled]="participantForm.invalid">Hinzufügen</button>}
+        @if (this.participantForm.get('id')!.value != '') {<button type="button" class="btn btn-outline-dark" (click)="editParticipant(); modal.close(); resetForm()" [disabled]="participantForm.invalid">Ändern</button>}
     </div>
 </ng-template>
 

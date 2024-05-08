@@ -13,4 +13,6 @@
     </div>
 }
 
-<button type="button" class="btn btn-primary" (click)="registerGroup()" [disabled]="link != ''">Gruppe anlegen</button>
+@if (link == '') {
+    <button type="button" class="btn btn-primary" (click)="registerGroup()">Gruppe anlegen</button>
+}

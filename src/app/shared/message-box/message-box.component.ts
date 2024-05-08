@@ -1,14 +1,10 @@
-import { Input, Output, Component, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
-import { debounceTime, tap } from 'rxjs/operators';
+import { Component, ViewChild } from '@angular/core';
 import { NgbAlert, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface Message {
 	type: string,
 	message: string
 }
-
 
 @Component({
 	selector: 'app-message-box',

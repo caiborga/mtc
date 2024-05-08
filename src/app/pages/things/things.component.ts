@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterLink } from '@angular/router';
@@ -12,8 +12,8 @@ export interface Thing {
     id: number,
     category: string,
     name: string,
-    perPerson: Number,
-    unitID: number,
+    per_person: Number,
+    unit_id: number,
     weight: Number,
 }
 
@@ -44,6 +44,7 @@ export interface CategoryData {
 })
 
 export class ThingsComponent {
+
     activeTab = 1;
     things: Thing[] = []
     participantForm = new FormGroup({
@@ -87,7 +88,7 @@ export class ThingsComponent {
                 name: true,
                 perPerson: true,
                 unit: true,
-                weight: false,
+                weight: true,
             },
             things: this.things,
             title: 'Nahrungsmittel',
@@ -99,7 +100,7 @@ export class ThingsComponent {
                 name: true,
                 perPerson: true,
                 unit: true,
-                weight: false,
+                weight: true,
             },
             things: this.things,
             title: 'Verbrauchsmaterial',

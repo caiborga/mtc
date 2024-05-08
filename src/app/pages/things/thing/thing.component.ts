@@ -1,5 +1,5 @@
-import { Component, EventEmitter, inject, Input, OnChanges, Output, TemplateRef, SimpleChanges } from '@angular/core';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, inject, Input, OnChanges, Output, TemplateRef, SimpleChanges, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { TourService } from '../../../core/services/tour.service';
@@ -20,6 +20,7 @@ export class ThingComponent implements OnChanges{
     
     @Input() data: CategoryData;
     @Output() reloadData = new EventEmitter();
+    @ViewChild(AddThingComponent) AddThingComponent!: AddThingComponent;
 
     thingForm = new FormGroup({
         category: new FormControl(''),
@@ -30,7 +31,7 @@ export class ThingComponent implements OnChanges{
         weight: new FormControl(null),
     });
 
-    
+    loadingData: boolean = false;
     selectedThingID: number = -1;
     thingsMap: any;
     foodUnits: any;
@@ -56,14 +57,23 @@ export class ThingComponent implements OnChanges{
 
     ngOnInit() {
         this.foodUnits = foodUnits
-        this.thingForm.get('category')!.setValue(this.data.category)
-        this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+        console.log(this.data)
+        if (this.data) {
+            this.thingForm.get('category')!.setValue(this.data.category)
+            this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+            console.log("thingsMap", this.thingsMap )
+        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('ngOnChanges:', changes['data'].currentValue);
-        this.data = changes['data'].currentValue
-        this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+        if (!changes['data'].isFirstChange()) {
+            console.log('ngOnChanges:', changes['data'].currentValue);
+            this.data = changes['data'].currentValue
+            this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
+            console.log("thingsMap", this.thingsMap )
+
+            this.loadingData = false;
+        }
     }
 
     open(content: TemplateRef<any>) {

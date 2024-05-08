@@ -1,14 +1,15 @@
 import { Component, EventEmitter, inject, Input, Output, TemplateRef, ViewChild } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TourService } from '../../core/services/tour.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Message, MessageBoxComponent } from '../message-box/message-box.component';
 
 @Component({
     selector: 'app-add-participant',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule],
+    imports: [FormsModule, MessageBoxComponent, ReactiveFormsModule],
     templateUrl: './add-participant.component.html',
     styleUrl: './add-participant.component.css'
 })
@@ -16,17 +17,17 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class AddParticipantComponent {
 
     @Input() editParticipantInput: any;
+    @Input() symbol: string = 'ph ph-user-plus'
     @Output() reloadData = new EventEmitter();
     @ViewChild('content') contentTemplate!: TemplateRef<any>;
+    @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
 
     loadingData: boolean = false;
-
-    participants: any;
 
     participantForm = new FormGroup({
         avatar: new FormControl(''),
         id: new FormControl(''),
-        name: new FormControl(''),
+        name: new FormControl('', Validators.required),
     });
 
     private modalService = inject(NgbModal);
@@ -37,9 +38,9 @@ export class AddParticipantComponent {
 
     ngOnChanges(changes: any) {
         console.log("ngOnChanges", changes)
-        if ( !changes.editParticipantInput.firstChange ) {
+        if ( changes.editParticipantInput && !changes.editParticipantInput.firstChange ) {
             this.participantForm.setValue(changes.editParticipantInput.currentValue)
-            this.openModal(this.contentTemplate)
+            this.openModal()
         }
     }
 
@@ -50,13 +51,12 @@ export class AddParticipantComponent {
         this.tourService.post('participants', this.participantForm.value)
         .toPromise()
         .then((response) => {
-            this.participants = response;
             this.reloadData.emit()
-            console.log('Teilnehmer hinzufügen- success', this.participants);
+            console.log('addParticipant - success', response);
         })
         .catch((error) => {
             this.loadingData = false;
-            console.error('Teilnehmer hinzufügen- error', error);
+            console.error('addParticipant - error', error);
         });
     }
 
@@ -65,9 +65,8 @@ export class AddParticipantComponent {
         this.tourService.put('participants/' + this.participantForm.get('id')!.value, this.participantForm.value)
         .toPromise()
         .then((response) => {
-            this.participants = response;
             this.reloadData.emit();
-            console.log('Edit participant - success', this.participants);
+            console.log('Edit participant - success', response);
         })
         .catch((error) => {
             console.error('Edit participant - error', error);
@@ -91,7 +90,12 @@ export class AddParticipantComponent {
         )
     }
 
-    openModal(content: TemplateRef<any>) {
-		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
+    openModal() {
+		this.modalService.open(this.contentTemplate, { ariaLabelledBy: 'modal-basic-title' })
 	}
+
+    openMessageBox(message: Message) {
+        console.log("message", message)
+        this.messageBox.changeSuccessMessage(message);
+    }
 }

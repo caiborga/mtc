@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AddThingComponent } from '../../../shared/add-thing/add-thing.component';
 import { TourService } from '../../../core/services/tour.service';
 import { Unit, foodUnits } from '../../../core/models/units';
@@ -10,7 +10,8 @@ export interface Thing {
     dailyRation?: number,
     id: string,
     name?: string,
-    carrier: string
+    carrier: string,
+    weight?: number
 }
 
 @Component({
@@ -31,6 +32,7 @@ export class PlannerThingsComponent {
     @Input() tourThings: any;
     @Output() reloadData = new EventEmitter()
     @Output() showElementChange = new EventEmitter<boolean>();
+    @ViewChild(AddThingComponent) AddThingComponent!: AddThingComponent;
 
     foodUnits: any = foodUnits
 
@@ -38,7 +40,12 @@ export class PlannerThingsComponent {
         private tourService: TourService,
     ) {}
 
-    ngOnInit() {
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['thingsMap']) {
+            
+            this.thingsMap = changes['thingsMap'].currentValue
+        }
     }
 
     addTourThing(inputData: any) {
@@ -84,15 +91,27 @@ export class PlannerThingsComponent {
         this.reloadData.emit();
     }
 
+    roundToTwoDecimals(num: number): number {
+        return Math.round((num + Number.EPSILON) * 100) / 100;
+    }
+
     getThingDetails(thing: Thing) : string {
 
         let dailyRation = thing.dailyRation!
-        let perPerson = this.thingsMap[thing.id].perPerson
+        let weight = this.thingsMap[thing.id].weight
         let persons = this.participants.length
         let unit = foodUnits[this.thingsMap[thing.id].id].unit
         let thingName = this.thingsMap[thing.id].name
+        let result = 0
 
-        return `<b>${persons * dailyRation * perPerson}</b> ${unit} ${thingName}`
+        if ( this.thingsMap[thing.id].category != 'items'){
+            result = this.roundToTwoDecimals(persons * dailyRation * weight)
+        } else {
+            result = this.roundToTwoDecimals(dailyRation * weight)
+        }
+
+
+        return `<b>${result}</b> kg ${thingName}`
         
     }
 
@@ -103,13 +122,14 @@ export class PlannerThingsComponent {
     }
 
     getngbPopover(thing: Thing) : string {
-        let dailyRation = thing.dailyRation!
-        let perPerson = this.thingsMap[thing.id].perPerson
-        let persons = this.participants.length
-        let unit = foodUnits[this.thingsMap[thing.id].id].unit
-        let thingName = this.thingsMap[thing.id].name
-
-        return `${perPerson} ${unit} * ${dailyRation} Tagesrationen für ${persons} Personen`
+        if ( this.thingsMap ) {
+            let dailyRation = thing.dailyRation!
+            let perPerson = this.thingsMap[thing.id].per_person
+            let persons = this.participants.length
+            let unit = foodUnits[this.thingsMap[thing.id].id].unit
+            let thingName = this.thingsMap[thing.id].name
+            return `${perPerson} ${unit} * ${dailyRation} Tagesrationen für ${persons} Personen`
+        }
+        return ''
     }
-
 }

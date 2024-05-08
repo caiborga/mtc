@@ -5,6 +5,7 @@ import { TourService } from '../../core/services/tour.service';
 import { MessageBoxComponent } from '../../shared/message-box/message-box.component';
 import { RouterLink } from '@angular/router';
 import { AddParticipantComponent } from '../../shared/add-participant/add-participant.component';
+import { participant } from '../../core/models/participant';
 
 @Component({
     selector: 'app-participants',
@@ -15,7 +16,9 @@ import { AddParticipantComponent } from '../../shared/add-participant/add-partic
 })
 export class ParticipantsComponent {
 
-    editParticipant:any;
+    @ViewChild(AddParticipantComponent) AddParticipantComponent!: AddParticipantComponent;
+
+    editParticipant!: participant;
     loadingData: boolean = false;
     participants: any;
     participantForm = new FormGroup({
@@ -41,11 +44,11 @@ export class ParticipantsComponent {
         .then((response) => {
             this.participants = response.participants;
             this.loadingData = false;
-            console.log('Teilnehmer abrufen - success', this.participants);
+            console.log('getParticipants - success', this.participants);
         })
         .catch((error) => {
             this.loadingData = false;
-            console.error('Teilnehmer abrufen - error', error);
+            console.error('getParticipants - error', error);
         });
     }
 

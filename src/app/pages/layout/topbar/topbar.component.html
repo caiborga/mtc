@@ -1,3 +1,5 @@
+<app-message-box ></app-message-box>
+
 @if ( isAuthenticated ) {
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-2">
         <a class="navbar-brand">Pack ma's</a>
@@ -22,8 +24,12 @@
         </div>
         <form class="form-inline">
             <div class="d-flex align-items-center">
-                <button type="button" class="btn btn-outline-secondary me-2" placement="left" ngbTooltip="Eingeloggt als Gruppe {{group.name}} mit ID {{group.key}}" (click)="logout()">
-                    <i class="ph ph-sign-out text-white"></i> {{group.name}}
+                <i class="ph ph-export"></i>
+                <button type="button" class="btn btn-outline-secondary me-2" placement="bottom" ngbTooltip="Link kopieren" (click)="copyToClipboard()">
+                    <i class="ph ph-share-network text-primary"></i>
+                </button>
+                <button type="button" class="btn btn-outline-secondary me-2" placement="bottom" ngbTooltip="{{group.name}} / {{group.key}} abmelden" (click)="logout()">
+                    <i class="ph ph-sign-out text-danger"></i>
                 </button>
             </div>
         </form>

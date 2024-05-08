@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { AddParticipantComponent } from '../../../shared/add-participant/add-participant.component';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCollapseModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -26,12 +26,14 @@ export class PlannerParticipantsComponent {
 	@Input() tourThings: any;
 	@Output() reloadData = new EventEmitter()
 	@Output() showElementChange = new EventEmitter<boolean>();
+    @ViewChild(AddParticipantComponent) AddParticipantComponent!: AddParticipantComponent;
 
 	constructor(
         private tourService: TourService,
     ) {}
 
 	ngOnInit(){
+		console.log("thingsMap", this.thingsMap)
 		console.log("participants", this.participants)
 		console.log("tourParticipants", this.tourParticipants)
 	}
@@ -68,12 +70,19 @@ export class PlannerParticipantsComponent {
 	getThingDetails(thing: Thing) : string {
 
         let dailyRation = thing.dailyRation!
-        let perPerson = this.thingsMap[thing.id].perPerson
+        let weight = this.thingsMap[thing.id].weight
         let persons = this.participants.length
         let unit = foodUnits[this.thingsMap[thing.id].id].unit
         let thingName = this.thingsMap[thing.id].name
+		let result = 0
 
-        return `<b>${persons * dailyRation * perPerson}</b> ${unit} ${thingName}`
+        if ( this.thingsMap[thing.id].category != 'items'){
+            result = this.roundToTwoDecimals(persons * dailyRation * weight)
+        } else {
+            result = this.roundToTwoDecimals(dailyRation * weight)
+        }
+
+        return `<b>${result}</b> kg ${thingName}`
         
     }
 
@@ -85,4 +94,8 @@ export class PlannerParticipantsComponent {
 		}
 		return false
 	}
+
+	roundToTwoDecimals(num: number): number {
+        return Math.round((num + Number.EPSILON) * 100) / 100;
+    }
 }
