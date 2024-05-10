@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth-service.service';
 import { LocalStorageService } from '../../core/services/local-storage.service';
 import { Router } from '@angular/router';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { backendUrl } from '../../../../environment';
 
 interface Response {
     message: string,
@@ -44,7 +45,7 @@ export class RegisterComponent {
             console.log('registerGroup - success', response.message);
             this.authService.login()
             this.localStorage.setItem('key', response.key)
-            this.link = `localhost:4200/${response.key}/`
+            this.link = `${backendUrl}/${response.key}/`
         })
         .catch((error) => {
             console.error('registerGroup - error', error);

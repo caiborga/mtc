@@ -6,6 +6,7 @@ import {
   HttpEvent
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { backendUrl } from '../../../../environment';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -13,8 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    // Überprüfen, ob die Anfrage mit 'http://localhost:3000/api/' beginnt
-    if (req.url.startsWith('http://localhost:3000/api/')) {
+    if (req.url.startsWith( backendUrl + '/api/')) {
       // Den Wert aus dem Local Storage abrufen (ersetze 'meinSchlüssel' durch den tatsächlichen Schlüssel)
       const token = localStorage.getItem('key');
 
@@ -29,7 +29,6 @@ export class AuthInterceptor implements HttpInterceptor {
       }
     }
 
-    // Wenn die Anfrage nicht mit 'http://localhost:3000/api/' beginnt oder kein Token im Local Storage vorhanden ist, führe die ursprüngliche Anfrage durch
     return next.handle(req);
   }
 }

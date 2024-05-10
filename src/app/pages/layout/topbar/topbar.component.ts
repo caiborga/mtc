@@ -9,6 +9,7 @@ import { Group } from '../../../core/models/group';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { slideInOutAnimation } from '../../../core/animations/fade';
 import { Message, MessageBoxComponent } from '../../../shared/message-box/message-box.component';
+import { backendUrl } from '../../../../../environment';
 
 
 @Component({
@@ -53,7 +54,7 @@ export class TopbarComponent implements OnDestroy {
         this.group.key = this.localStorageService.getItem('key')
         if ( this.group.key ) {
             this.isAuthenticated = true
-            this.link = `localhost:4200/${this.group.key}/`
+            this.link = `${backendUrl}/${this.group.key}/`
             this.getGroupName()
         }
     }
