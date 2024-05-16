@@ -1,4 +1,4 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -20,9 +20,9 @@ import { backendUrl } from '../../../../../environment';
     templateUrl: './topbar.component.html',
     styleUrl: './topbar.component.css',
 })
-export class TopbarComponent implements OnDestroy {
+export class TopbarComponent implements OnInit, OnDestroy {
 
-    @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
+    @ViewChild(MessageBoxComponent) messageBox!:MessageBoxComponent
 
     private authSubscription: Subscription;
     isAuthenticated: boolean = false;
@@ -77,7 +77,7 @@ export class TopbarComponent implements OnDestroy {
         .toPromise()
         .then((response) => {
             this.group.name = response.name
-            console.log('getGroupName - success:', response);
+            // console.log('getGroupName - success:', response);
         })
         .catch((error) => {
             console.error('getGroupName - error:', error);

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AddParticipantComponent } from '../../../shared/add-participant/add-participant.component';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCollapseModule, NgbOffcanvas, OffcanvasDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -38,6 +38,12 @@ export class PlannerParticipantsComponent {
 		console.log("tourParticipants", this.tourParticipants)
 	}
 
+	ngOnChanges(changes: SimpleChanges) {
+        if (changes['participants']) {
+            this.participants = changes['participants'].currentValue
+        }
+    }
+
   	addTourParticipant(inputData: any) {
 		console.log("participantID", inputData.target.value)
 
@@ -59,12 +65,12 @@ export class PlannerParticipantsComponent {
 		this.tourService.put('tour/' + this.tourID + '/participants', data)
 		.toPromise()
 		.then((response) => {
+			this.reloadData.emit()
 			console.log('editTourParticipants - success', response);
 		})
 		.catch((error) => {
 			console.error('editTourParticipants - error', error);
 		});
-		this.reloadData.emit()
 	}
 
 	getThingDetails(thing: Thing) : string {
@@ -72,7 +78,6 @@ export class PlannerParticipantsComponent {
         let dailyRation = thing.dailyRation!
         let weight = this.thingsMap[thing.id].weight
         let persons = this.participants.length
-        let unit = foodUnits[this.thingsMap[thing.id].id].unit
         let thingName = this.thingsMap[thing.id].name
 		let result = 0
 
@@ -93,6 +98,32 @@ export class PlannerParticipantsComponent {
 			}
 		}
 		return false
+	}
+
+	removeTourParticipant(participantID: string) {
+		console.log("tourParticipants", this.tourParticipants)
+
+		const index =  this.tourParticipants.findIndex((obj: any) => obj.id === participantID);
+
+        if (index !== -1) {
+            this.tourParticipants.splice(index, 1);
+        } else {
+            console.log('Participant not found.');
+        }
+
+		const data = {
+			tourParticipants: JSON.stringify(this.tourParticipants),
+		};
+
+		this.tourService.put('tour/' + this.tourID + '/participants', data)
+		.toPromise()
+		.then((response) => {
+			this.reloadData.emit()
+			console.log('editTourParticipants - success', response);
+		})
+		.catch((error) => {
+			console.error('editTourParticipants - error', error);
+		});
 	}
 
 	roundToTwoDecimals(num: number): number {

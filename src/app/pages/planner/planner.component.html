@@ -13,7 +13,7 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col d-flex justify-content-start align-items-center gap-2">
-                        <h3 style="cursor: pointer;">{{tourData.name}} </h3> 
+                        <h3 style="cursor: pointer;">{{tourData.name}} - {{tourData.destination}}</h3> 
                     </div>
                     <div class="col d-flex justify-content-end gap-2">
                         <div ngbDropdown class="d-inline-block">
@@ -23,7 +23,7 @@
                             <!-- MENU -->
                             <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
                                 <!-- PARTICIPANTS -->
-                                <button ngbDropdownItem (click)="showParticipantsBool = !showParticipantsBool">
+                                <button ngbDropdownItem (click)="showParticipantsBool = !showParticipantsBool; carSharingComponent.recalculateOffsetTop()">
                                     <div class="d-flex align-items-center gap-2" [ngClass]="showParticipantsBool ? '' : 'text-secondary'">
                                         <i 
                                             class="ph ph-users-three fs-5"
@@ -34,7 +34,7 @@
                                     </div>
                                 </button>
                                 <!-- THINGS -->
-                                <button ngbDropdownItem (click)="showThingsBool = !showThingsBool">
+                                <button ngbDropdownItem (click)="showThingsBool = !showThingsBool; carSharingComponent.recalculateOffsetTop()">
                                     <div class="d-flex align-items-center gap-2" [ngClass]="showThingsBool ? '' : 'text-secondary'">
                                         <i 
                                             class="ph ph-backpack fs-5"
@@ -58,7 +58,7 @@
                                 <!-- DIVIDER -->
                                 <div class="dropdown-divider"></div>
                                 <!-- VIEW -->
-                                <button ngbDropdownItem (click)="tableView ? tableView = false : tableView = true">
+                                <button ngbDropdownItem (click)="tableView ? tableView = false : tableView = true; carSharingComponent.recalculateOffsetTop()">
                                     <div class="d-flex align-items-center gap-2">
                                         <i *ngIf="!tableView" class="ph ph-rows fs-5" style="cursor: pointer;" ></i>
                                         <i *ngIf="tableView" class="ph ph-columns fs-5" style="cursor: pointer;"></i>
@@ -66,7 +66,7 @@
                                     </div>
                                 </button>
                                 <!-- TOUR DETAILS -->
-                                <button ngbDropdownItem (click)="isCollapsed = !isCollapsed">
+                                <button ngbDropdownItem (click)="isCollapsed = !isCollapsed; carSharingComponent.recalculateOffsetTop()">
                                     <div class="d-flex align-items-center gap-2" [ngClass]="!isCollapsed ? '' : 'text-secondary'">
                                         <i class="bi bi-gear"></i>
                                         <span>Tour Details</span>
@@ -169,7 +169,7 @@
             @if (showParticipantsBool) {
                 <div [ngClass]="tableView ? 'col' : ''">
                     <app-planner-participants
-                        (reloadData)="getTourData(tourID)"
+                        (reloadData)="getTourData(tourID); getParticipants(); getThings();"
                         [participants] = "participants"
                         [participantsMap] ="participantsMap"
                         [thingsMap] = "thingsMap"
@@ -186,7 +186,7 @@
             @if (showThingsBool) {
                 <div [ngClass]="tableView ? 'col' : ''">
                     <app-planner-things
-                        (loadData)="getTourData(tourID)"
+                        (reloadData)="getTourData(tourID); getParticipants(); getThings();"
                         [participants]="participants"
                         [things]="things"
                         [tourData]="tourData"

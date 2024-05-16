@@ -1,4 +1,5 @@
 <div class="card mt-2 shadow-sm">
+    <!-- HEADER -->
     <div class="card-header">
         <div class="row">
             <div class="col d-flex align-items-center justify-content-start gap-2">
@@ -11,7 +12,7 @@
                         @for (thing of things; track thing.name) {
                                 <option [value]="thing.id">{{ thing.name }}</option>
                             } @empty {
-                                <li>There are no items.</li>
+                                <li>Kein weiteres Gepäck verfügbar</li>
                             }
                     </select>
                     <button class="btn btn-outline-secondary btn-sm" type="button" id="button-addon2" (click)="AddThingComponent.open()">
@@ -25,6 +26,7 @@
             </div>
         </div>
     </div>
+    <!-- BODY -->
     <div class="card-body mx-2">
         <table class="table">
             <tbody>
@@ -51,17 +53,22 @@
                                     </i>
                                 }
                             </div>
-                            <div class="col-6">
+                            <div class="col-6 d-flex justify-content-center align-items-center gap-2">
                                 <select class="form-select form-select-sm" aria-label="Default select example" (change)="assignThingTo(thing.id, $event)">
                                     <option [value]="''">Nicht zugewiesen</option>
                                     @for (participant of participants; track participant){
                                         <option [value]="participant.id" [selected]="participant.id == thing.carrier">{{participant.name}}</option>
                                     }
                                 </select>
+                                @if(!thing.carrier) {
+                                    <i class="ph ph-trash text-danger" style="cursor: pointer;" (click)="removeTourThing(thing.id)"></i>
+                                }
                             </div>
                         </div>
                     </td>
                 </tr>
+                } @empty {
+                    <button type="button" class="list-group-item list-group-item-action"> Bisher keine Teilnehmer </button>
                 }
             </tbody>
         </table>

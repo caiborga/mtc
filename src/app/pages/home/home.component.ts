@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, NgModel } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, NgModel, Validators } from '@angular/forms';
 import { Observable, OperatorFunction } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -25,6 +25,7 @@ export class HomeComponent {
 
     groupIdFromLink: string = '';
     groupIdFromStorage: string | null = '';
+    loadingData: boolean = false;
     newParticipants: Array<any> = [];
     newThings: Array<any> = [];
     participantsMap: Array<any> = [];
@@ -69,12 +70,14 @@ export class HomeComponent {
 	}
 
     tourForm = new FormGroup({
-        name: new FormControl(''),
-        start: new FormControl(''),
-        end: new FormControl(''),
+        destination: new FormControl(''),
+        name: new FormControl('', Validators.required),
+        start: new FormControl('', Validators.required),
+        end: new FormControl('', Validators.required),
     });
 
     async ngOnInit() {
+        this.loadingData = true;
         let groupIsValid = false;
     
         // Get group ID from route params
@@ -126,21 +129,24 @@ export class HomeComponent {
     }
 
     getTours(){
+        this.loadingData = true;
         this.tourService.get('tours')
         .toPromise()
         .then((response) => {
             this.tours = response.tours;
-            console.log('getTours - success:', this.tours);
+            // console.log('getTours - success:', this.tours);
             for (let tour in this.tours) {
                 let participants = JSON.parse(this.tours[tour].tour_participants)
                 let tourData = JSON.parse(this.tours[tour].tour_data)
                 this.tours[tour].participants = participants
                 this.tours[tour].tourData = tourData
             }
+            this.loadingData = false;
             console.log('getTours - success:', this.tours);
             
         })
         .catch((error) => {
+            this.loadingData = false;
             console.error('getTours - error:', error);
         });
     }
@@ -150,12 +156,12 @@ export class HomeComponent {
         .toPromise()
         .then((response) => {
             //this.participantsMap = response.participants;
-            console.log('getParticipants - success', this.participantsMap);
+            // console.log('getParticipants - success', this.participantsMap);
             for (var i = 0; i < response.participants.length; i++) {
                 var id = response.participants[i].id;
                 this.participantsMap[id] = response.participants[i];
             }
-            console.log("participantsMap", this.participantsMap)
+            // console.log("participantsMap", this.participantsMap)
 
         })
         .catch((error) => {

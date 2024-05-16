@@ -46,6 +46,10 @@ export class PlannerThingsComponent {
             
             this.thingsMap = changes['thingsMap'].currentValue
         }
+        if (changes['things']) {
+            
+            this.things = changes['things'].currentValue
+        }
     }
 
     addTourThing(inputData: any) {
@@ -83,12 +87,13 @@ export class PlannerThingsComponent {
         this.tourService.put('tour/' + this.tourID + '/things', data)
         .toPromise()
         .then((response) => {
+        
+            this.reloadData.emit();
             console.log('editTourThings - success', response);
         })
         .catch((error) => {
             console.error('editTourThings - error', error);
         });
-        this.reloadData.emit();
     }
 
     roundToTwoDecimals(num: number): number {
@@ -100,7 +105,6 @@ export class PlannerThingsComponent {
         let dailyRation = thing.dailyRation!
         let weight = this.thingsMap[thing.id].weight
         let persons = this.participants.length
-        let unit = foodUnits[this.thingsMap[thing.id].id].unit
         let thingName = this.thingsMap[thing.id].name
         let result = 0
 
@@ -126,10 +130,26 @@ export class PlannerThingsComponent {
             let dailyRation = thing.dailyRation!
             let perPerson = this.thingsMap[thing.id].per_person
             let persons = this.participants.length
-            let unit = foodUnits[this.thingsMap[thing.id].id].unit
+            let unit = foodUnits[this.thingsMap[thing.id].unit_id].unit
             let thingName = this.thingsMap[thing.id].name
             return `${perPerson} ${unit} * ${dailyRation} Tagesrationen für ${persons} Personen`
         }
         return ''
+    }
+
+    removeTourThing(id: string) {
+
+        console.log("this.tourThings", this.tourThings)
+
+        const index =  this.tourThings.findIndex((obj: any) => obj.id === id);
+
+        if (index !== -1) {
+            // Entferne das Objekt aus dem Array
+            this.tourThings.splice(index, 1);
+        } else {
+            console.log('Objekt mit der ID wurde nicht gefunden.');
+        }
+
+        this.editTourThings()
     }
 }

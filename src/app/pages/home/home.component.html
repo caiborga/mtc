@@ -1,54 +1,63 @@
-@for (tour of tours; track $index) {
-
-    <div class="card text-start mt-4" >
-        <div class="card-header">
-            <div class="row d-flex align-items-center">
-                <div class="col d-flex justify-content-start">
-                    <h4>{{tour.tourData.name}}</h4>
-                </div>
-                <div class="col d-flex justify-content-end">
-                    <!-- MENU -->
-                    <div ngbDropdown class="d-inline-block">
-                        <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
-                            <i class="ph ph-list"></i>
-                        </button>
-                        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                            <!-- EDIT -->
-                            <button ngbDropdownItem routerLink="/planner/{{tour.id}}" routerLinkActive="active">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" ></i>
-                                    <span>Bearbeiten</span>
-                                </div>
+@if(!loadingData) {
+    @for (tour of tours; track $index) {
+        <div class="card text-start mt-4" >
+            <div class="card-header">
+                <div class="row d-flex align-items-center">
+                    <div class="col d-flex justify-content-start">
+                        <h4>{{tour.tourData.name}}</h4>
+                    </div>
+                    <div class="col d-flex justify-content-end">
+                        <!-- MENU -->
+                        <div ngbDropdown class="d-inline-block">
+                            <button type="button" class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>
+                                <i class="ph ph-list"></i>
                             </button>
-                            <!-- DELETE -->
-                            <button ngbDropdownItem (click)="deleteTour(tour.id)">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-trash text-danger me-2" style="cursor: pointer;"></i>
-                                    <span>Löschen</span>
-                                </div>
-                            </button>
+                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                <!-- EDIT -->
+                                <button ngbDropdownItem routerLink="/planner/{{tour.id}}" routerLinkActive="active">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-pencil text-warning me-2" style="cursor: pointer;" ></i>
+                                        <span>Bearbeiten</span>
+                                    </div>
+                                </button>
+                                <!-- DELETE -->
+                                <button ngbDropdownItem (click)="deleteTour(tour.id)">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-trash text-danger me-2" style="cursor: pointer;"></i>
+                                        <span>Löschen</span>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="card-body">
+                <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.tourData.name}}</h5>
+                <p class="card-text">{{tour.tourData.start }} bis {{tour.tourData.end}} </p>
+                <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
+            </div>
         </div>
-        <div class="card-body">
-            <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.tourData.name}}</h5>
-            <p class="card-text">{{tour.tourData.start }} bis {{tour.tourData.end}} </p>
-            <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
+    }
+
+
+    <div class="d-flex justify-content-center m-3">
+        <button type="button" class="btn btn-primary" (click)="open(tourModal)">
+            <div class="d-flex align-items-center gap-2">
+                <i class="ph ph-plus"></i> 
+                <span>Neue Tour</span>
+            </div>
+            
+        </button>
+    </div>
+    
+}@else{
+    <div class="d-flex justify-content-center my-3">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden"></span>
         </div>
     </div>
 }
-
-<div class="d-flex justify-content-center m-3">
-    <button type="button" class="btn btn-primary" (click)="open(tourModal)">
-        <div class="d-flex align-items-center gap-2">
-            <i class="ph ph-plus"></i> 
-            <span>Neue Tour</span>
-        </div>
-        
-    </button>
-</div>
 
 
 <ng-template #tourModal let-modal>
@@ -66,7 +75,7 @@
                 </div>
                 <!-- NAME -->
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="destination">
                     <label for="floatingInput">Ziel</label>
                 </div>
                 <!-- PERIOD -->

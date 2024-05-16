@@ -160,6 +160,7 @@ interface Thing {
 })
 export class PlannerComponent {
 
+    @ViewChild(CarsharingComponent) carSharingComponent!: CarsharingComponent;
     @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
 
     isCollapsed = false;

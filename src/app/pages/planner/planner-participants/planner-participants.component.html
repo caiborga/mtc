@@ -1,4 +1,5 @@
 <div class="card mt-2 shadow-sm">
+    <!-- HEADER -->
     <div class="card-header">
         <div class="row">
             <div class="col d-flex align-items-center justify-content-start gap-2">
@@ -25,16 +26,24 @@
             </div>
         </div>
     </div>
-    
+    <!-- BODY -->
     <div class="card-body mx-2 mb-2">
         @for (participant of tourParticipants; track participant.id; let  i = $index) {
             <div ngbAccordion>
                 <div ngbAccordionItem [collapsed]="true">
                     <h2 ngbAccordionHeader>
                         <button ngbAccordionButton>
-                            <!-- <img class="rounded me-2" style="height: 20px; width: auto;" src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg"> -->
-                            {{participantsMap[participant.id].name}}
-                            <!-- SHOW BURDEN COUNT -->
+                            <div class="d-flex align-items-center gap-1">
+                                <img
+                                    class="rounded me-2" 
+                                    style="height: 20px; width: auto;" 
+                                    src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg"
+                                    >
+                                {{participantsMap[participant.id].name}}
+                                @if(participant) {
+                                    <i class="ph ph-trash text-danger" style="cursor: pointer;" (click)="removeTourParticipant(participant.id)"></i>
+                                }
+                            </div>
                         </button>
                     </h2>
                     <div ngbAccordionCollapse>
@@ -60,7 +69,7 @@
                 </div>
             </div>
         } @empty {
-            <button type="button" class="list-group-item list-group-item-action"> Bisher keine Teilnehmer </button>
+            <button type="button" class="list-group-item list-group-item-action"> Bisher keine Teilnehmenden hinzugefügt </button>
         }
     </div>
 </div>
