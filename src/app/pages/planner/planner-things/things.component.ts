@@ -29,6 +29,7 @@ export class PlannerThingsComponent {
     @Input() tourID: number = 0;
     @Input() things: any;
     @Input() thingsMap: any;
+	@Input() tourParticipants: any;
     @Input() tourThings: any;
     @Output() reloadData = new EventEmitter()
     @Output() showElementChange = new EventEmitter<boolean>();
@@ -96,6 +97,24 @@ export class PlannerThingsComponent {
         });
     }
 
+    isParticipantInTour(participantID: number) {
+		for ( let tourParticipant of this.tourParticipants) {
+			if ( participantID == tourParticipant.id) {
+				return true
+			}
+		}
+		return false
+	}
+
+    isThingInTour(thingID: number) {
+        for ( let thing of this.tourThings) {
+			if ( thingID == thing.id) {
+				return true
+			}
+		}
+		return false
+	}
+
     roundToTwoDecimals(num: number): number {
         return Math.round((num + Number.EPSILON) * 100) / 100;
     }
@@ -104,7 +123,7 @@ export class PlannerThingsComponent {
 
         let dailyRation = thing.dailyRation!
         let weight = this.thingsMap[thing.id].weight
-        let persons = this.participants.length
+        let persons = this.tourParticipants.length
         let thingName = this.thingsMap[thing.id].name
         let result = 0
 
@@ -129,7 +148,7 @@ export class PlannerThingsComponent {
         if ( this.thingsMap ) {
             let dailyRation = thing.dailyRation!
             let perPerson = this.thingsMap[thing.id].per_person
-            let persons = this.participants.length
+            let persons = this.tourParticipants.length
             let unit = foodUnits[this.thingsMap[thing.id].unit_id].unit
             let thingName = this.thingsMap[thing.id].name
             return `${perPerson} ${unit} * ${dailyRation} Tagesrationen für ${persons} Personen`

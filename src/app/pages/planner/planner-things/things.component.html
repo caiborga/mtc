@@ -10,7 +10,9 @@
                     <select class="form-select form-select-sm" aria-label="Small select example" (change)="addTourThing($event)">
                         <option selected>Gepäck hinzufügen</option>
                         @for (thing of things; track thing.name) {
+                            @if (!isThingInTour(thing.id)) {
                                 <option [value]="thing.id">{{ thing.name }}</option>
+                            }
                             } @empty {
                                 <li>Kein weiteres Gepäck verfügbar</li>
                             }
@@ -57,7 +59,9 @@
                                 <select class="form-select form-select-sm" aria-label="Default select example" (change)="assignThingTo(thing.id, $event)">
                                     <option [value]="''">Nicht zugewiesen</option>
                                     @for (participant of participants; track participant){
-                                        <option [value]="participant.id" [selected]="participant.id == thing.carrier">{{participant.name}}</option>
+                                        @if (isParticipantInTour(participant.id)) {
+                                            <option [value]="participant.id" [selected]="participant.id == thing.carrier">{{participant.name}}</option>
+                                        }
                                     }
                                 </select>
                                 @if(!thing.carrier) {

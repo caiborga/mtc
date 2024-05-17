@@ -5,27 +5,27 @@ import { FormsModule } from '@angular/forms';
 import { Participant } from '../planner.component';
 import { TourService } from '../../../core/services/tour.service';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
-import { GoogleMapsModule } from '@angular/google-maps'
 
 import { Message, MessageBoxComponent } from '../../../shared/message-box/message-box.component';
 
 interface Car {
-    seats?: Number,
-    type?: String,
-    passengers: Number[]
+    meetingPoint?: string,
+    note?: string,
+    passengers: Array<any>,
+    time?: string
 }
 
 @Component({
     selector: 'app-carsharing',
     standalone: true,
-    imports: [CommonModule, DragDropModule, FormsModule, GoogleMapsModule, MessageBoxComponent, NgbTooltipModule],
+    imports: [CommonModule, DragDropModule, FormsModule, MessageBoxComponent, NgbTooltipModule],
     templateUrl: './carsharing.component.html',
     styleUrl: './carsharing.component.css'
 })
 export class CarsharingComponent {
 
     @Input() participantsMap: any;
-    @Input() tourCars: any;
+    @Input() tourCars!: Car[];
     @Input() tourID: number = -1;
     @Input() tourParticipants: any;
     @Input() showElement: boolean = true;
@@ -42,14 +42,6 @@ export class CarsharingComponent {
     selectedParticipants: Array<String> = [];
     unassignedPassengers: Array<number> = [];
 
-
-    center: google.maps.LatLngLiteral = {
-        lat: 22.2736308,
-        lng: 70.7512555
-    };
-
-    zoom = 10;
-
     @HostListener('window:scroll', ['$event'])
     onScroll(event: Event) {
         const topOffset = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
@@ -65,14 +57,13 @@ export class CarsharingComponent {
     constructor(
         private elementRef: ElementRef,
         private tourService: TourService,
-        private mapsAPILoader: GoogleMapsModule
     ) {}
-
 
     ngOnInit() {
 
         this.carCount = this.tourCars.length;
         console.log("this.tourCars", this.tourCars)
+        console.log("this.tourParticipants", this.tourParticipants)
 
         for (let participant in this.tourParticipants) {
             this.unassignedPassengers.push(this.tourParticipants[participant].id)
@@ -82,6 +73,7 @@ export class CarsharingComponent {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        
         if (changes['tourCars']) {
             this.tourCars = changes['tourCars'].currentValue
         }
@@ -91,7 +83,7 @@ export class CarsharingComponent {
 
         }
         if (changes['participantsMap']) {
-            this.tourParticipants = changes['participantsMap'].currentValue
+            this.participantsMap = changes['participantsMap'].currentValue
         }
     }
 
@@ -177,6 +169,16 @@ export class CarsharingComponent {
         this.elementOffsetTop = this.elementRef.nativeElement.offsetTop;
     }
 
+    removePassengerFromCar(participant: number, car: number) {
+        this.unassignedPassengers.push(participant)
+        this.tourCars[car].passengers.splice(participant, 1)
+        for (let index in this.tourCars[car].passengers) {
+            if ( this.tourCars[car].passengers[index] == participant ) {
+                this.tourCars[car].passengers.splice(Number(index), 1);
+            }
+        }
+    }
+
     setCarCount(modus: string) {
     
         if ( modus === 'increment') {
@@ -199,16 +201,6 @@ export class CarsharingComponent {
                     message: `Da eine Zuweisung besteht, kann Auto ${this.tourCars.length} nicht gelöscht werden!`
                 }
                 this.showMessageBox.emit(message)
-            }
-        }
-    }
-
-    removePassengerFromCar(participant: number, car: number) {
-        this.unassignedPassengers.push(participant)
-        this.tourCars[car].passengers.splice(participant, 1)
-        for (let index in this.tourCars[car].passengers) {
-            if ( this.tourCars[car].passengers[index] == participant ) {
-                this.tourCars[car].passengers.splice(Number(index), 1);
             }
         }
     }

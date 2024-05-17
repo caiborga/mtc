@@ -7,16 +7,16 @@ import { LocalStorageService } from '../../../core/services/local-storage.servic
 import { TourService } from '../../../core/services/tour.service';
 import { Group } from '../../../core/models/group';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { slideInOutAnimation } from '../../../core/animations/fade';
 import { Message, MessageBoxComponent } from '../../../shared/message-box/message-box.component';
 import { backendUrl } from '../../../../../environment';
-
 
 @Component({
     animations: [slideInOutAnimation],
     selector: 'app-topbar',
     standalone: true,
-    imports: [ MessageBoxComponent, NgbTooltipModule, RouterLink],
+    imports: [ MessageBoxComponent, NgbCollapseModule, NgbTooltipModule, RouterLink],
     templateUrl: './topbar.component.html',
     styleUrl: './topbar.component.css',
 })
@@ -25,6 +25,7 @@ export class TopbarComponent implements OnInit, OnDestroy {
     @ViewChild(MessageBoxComponent) messageBox!:MessageBoxComponent
 
     private authSubscription: Subscription;
+    toggleNavbar = true;
     isAuthenticated: boolean = false;
     link: string = ''
     group: Group = {

@@ -14,7 +14,7 @@
                                 <option [value]="participant.id">{{ participant.name }}</option>
                             }
                         } @empty {
-                            <li>There are no items.</li>
+                            <li>Keine weiteren Teilnehmer verfügbar</li>
                         }
                     </select>
                     <button class="btn btn-outline-secondary btn-sm" type="button" id="button-addon2" (click)="AddParticipantComponent.openModal()">
@@ -40,7 +40,7 @@
                                     src="assets\images\avatars\{{participantsMap[participant.id].avatar}}thumbnail.jpg"
                                     >
                                 {{participantsMap[participant.id].name}}
-                                @if(participant) {
+                                @if(participant && participantIsLazy(participant.id)) {
                                     <i class="ph ph-trash text-danger" style="cursor: pointer;" (click)="removeTourParticipant(participant.id)"></i>
                                 }
                             </div>

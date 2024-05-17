@@ -7,6 +7,8 @@ import { FormsModule, FormBuilder } from '@angular/forms';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbCollapseModule, NgbOffcanvas, NgbDropdownModule  } from '@ng-bootstrap/ng-bootstrap';
 import { RouterLink } from '@angular/router';
+import { GoogleMapsModule } from '@angular/google-maps'
+import { MapGeocoder } from '@angular/google-maps';
 
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../core/services/tour.service';
@@ -16,98 +18,9 @@ import { PlannerParticipantsComponent } from './planner-participants/planner-par
 import { PlannerThingsComponent } from './planner-things/things.component';
 import { CarsharingComponent } from './planner-carsharing/carsharing.component';
 import { Message, MessageBoxComponent } from '../../shared/message-box/message-box.component';
+import { AddTourComponent } from '../../shared/add-tour/add-tour.component';
 
-
-// API Abfrage einer bestimmten Tour mit ID x
-// const tour = {
-//     breakfastCount: 2,
-//     dinnerCount: 2,
-//     from: '01.01.2023',
-//     id: 1,  
-//     name: 'Bichlhütte',
-//     to: '01.01.2023',
-//     participants: [ 
-//         { 
-//             id: '1',
-//             name: 'Sören'
-//         },
-//         { 
-//             id: '2',
-//             name: 'Thomas'
-//         },
-//         { 
-//             id: '3',
-//             name: 'Herbert'
-//         },
-//         { 
-//             id: '4',
-//             name: 'Paul'
-//         },
-//         {
-//             id: '5',
-//             name: 'Tine'
-//         },
-//     ],
-//     things: [
-//         {   
-//             id: '1',
-//             name: 'Bose Box',
-//             carrier: '' 
-//         },
-//         {
-//             id: '2',
-//             name: 'Nudeln',
-//             carrier: ''
-//         },
-//         {
-//             id: '3',
-//             name: 'Reis',
-//             carrier: ''
-//         } ,
-//         {
-//             id: '4',
-//             name: 'Essig', 
-//             carrier: ''
-//         },
-//         {
-//             id: '5',
-//             name: 'Schockolade',
-//             carrier: ''
-//         }, 
-//         {
-//             id: '6',
-//             name: 'Penis',
-//             carrier: ''
-//         },
-//         {
-//             id: '7',
-//             name: 'Taschentücher',
-//             carrier: '',
-//         }
-//     ],
-//     meals: [
-//         {
-//             type: 'dinner',
-//             meal: 'Reis mit Scheiß',
-//             date: '01.03.2023',
-//         },
-//         {
-//             type: 'breakfast',
-//             meal: 'Müsli',
-//             date: '02.03.2023',
-//         },
-//         {
-//             type: 'dinner',
-//             meal: 'NumiPe',
-//             date: '02.03.2023',
-//         },
-//         {
-//             type: 'breakfast',
-//             meal: 'Müsli',
-//             date: '03.03.2023',
-//         },
-//     ]
-// }
+import { Tour } from '../../core/models/tour';
 
 interface Car {
     seats?: Number,
@@ -142,10 +55,12 @@ interface Thing {
     imports: [
         AddParticipantComponent,
         AddThingComponent,
+        AddTourComponent,
         CarsharingComponent,
         CommonModule, 
         DatePickerComponent, 
         FormsModule,
+        GoogleMapsModule,
         MessageBoxComponent,
         NgbAccordionModule,
         NgbCollapseModule,
@@ -163,9 +78,24 @@ export class PlannerComponent {
     @ViewChild(CarsharingComponent) carSharingComponent!: CarsharingComponent;
     @ViewChild(MessageBoxComponent) messageBox:MessageBoxComponent = new MessageBoxComponent;
 
+    center!: google.maps.LatLngLiteral;
+
+    mapOptions: google.maps.MapOptions = {
+        disableDefaultUI: true,
+        zoom : 15
+    }
+
+    tourCoordinates: Object = {}
+
     isCollapsed = false;
     loading: boolean = false;
     tableView = false;
+    tour: Tour = {
+        tourCars: {},
+        tourData: {},
+        tourParticipants: {},
+        tourThings: {}
+    };
     tourData: any;
     tourID: number = 0;
     newParticipant: Participant = {
@@ -179,6 +109,13 @@ export class PlannerComponent {
     showParticipantsBool: boolean = true;
     showThingsBool: boolean = true;
     tourCars: Array<Car> = [];
+    tourForm = new FormGroup({
+        arrivalChecked: new FormControl(false),
+        departureChecked: new FormControl(true),
+        start: new FormControl<Date | null>(null),
+        name: new FormControl(''),
+        end: new FormControl<Date | null>(null)
+    });
     tourMeals: Array<Meal> = [];
     tourParticipants: Array<Participant> = [];
     tourParticipantsMap: any;
@@ -192,18 +129,10 @@ export class PlannerComponent {
     meals: Array<Meal> = [];
     private sub: any;
     private offcanvasService = inject(NgbOffcanvas);
-	closeResult = '';
-
-    tourForm = new FormGroup({
-        arrivalChecked: new FormControl(false),
-        departureChecked: new FormControl(true),
-        start: new FormControl<Date | null>(null),
-        name: new FormControl(''),
-        end: new FormControl<Date | null>(null)
-    });
 
     constructor(
         private formBuilder: FormBuilder,
+        private geocoder: MapGeocoder,
         private route: ActivatedRoute, 
         private tourService: TourService,
     ) {}
@@ -218,9 +147,7 @@ export class PlannerComponent {
         this.getParticipants()
         this.getThings()
         this.getTourData(this.tourID)
-        
-        //Suche nach Element mit KEY x
-        //this.participants = tour[this.tourID as keyof typeof tour].participants;
+
     }
 
     changeTourData() {
@@ -289,7 +216,12 @@ export class PlannerComponent {
             this.tourParticipants = JSON.parse(response.tour.tour_participants)
             this.tourThings = JSON.parse(response.tour.tour_things)
 
-            // console.log('getTourData - tourCars', this.tourCars);
+            this.tour.tourCars = this.tourCars
+            this.tour.tourData = this.tourData
+            this.tour.tourParticipants = this.tourParticipants
+            this.tour.tourThings = this.tourThings
+
+            console.log('getTourData - tourCars', this.tourCars);
             // console.log('getTourData - tourData', this.tourData);
             // console.log('getTourData - tourParticipants', this.tourParticipants);
             console.log('getTourData - tourThings', this.tourThings);
@@ -299,6 +231,20 @@ export class PlannerComponent {
             this.tourForm.controls.arrivalChecked.setValue(this.tourData.arrivalChecked)
             this.tourForm.controls.departureChecked.setValue(this.tourData.departureChecked)
 
+            this.geocoder.geocode({
+
+                address: this.tourData.destination
+
+            }).subscribe(({results}) => {
+                console.log(results);
+                console.log('laatitude:  ',results[0].geometry.location.lat());
+                console.log('logitude:  ',results[0].geometry.location.lng());
+
+                this.center = {
+                    lat: results[0].geometry.location.lat(),
+                    lng: results[0].geometry.location.lng(),
+                  };
+            });
 
             // this.tourMeals = response.meals;
             this.loading = false;

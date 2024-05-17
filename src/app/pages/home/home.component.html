@@ -34,21 +34,18 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title" style="cursor: pointer;" routerLink="/planner/{{tour.id}}" routerLinkActive="active">{{tour.tourData.name}}</h5>
-                <p class="card-text">{{tour.tourData.start }} bis {{tour.tourData.end}} </p>
+                <p class="card-text">{{tour.tourData.start | date:'dd.MM.yyyy'}} bis {{tour.tourData.end | date:'dd.MM.yyyy'}} </p>
                 <p class="card-text">{{tour.participants.length}} Teilnehmer </p>
             </div>
         </div>
     }
 
-
     <div class="d-flex justify-content-center m-3">
-        <button type="button" class="btn btn-primary" (click)="open(tourModal)">
-            <div class="d-flex align-items-center gap-2">
-                <i class="ph ph-plus"></i> 
-                <span>Neue Tour</span>
-            </div>
-            
-        </button>
+        <app-add-tour
+            (loadData)="getTours()"
+            [icon]="'ph ph-plus'"
+            >
+        </app-add-tour>
     </div>
     
 }@else{
@@ -58,61 +55,3 @@
         </div>
     </div>
 }
-
-
-<ng-template #tourModal let-modal>
-	<div class="modal-header">
-		<h4 class="modal-title" id="modal-basic-title">Neue Tour</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-	</div>
-	<div class="modal-body">
-        <form [formGroup]="tourForm">
-			<div class="mb-3">
-                <!-- NAME -->
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
-                    <label for="floatingInput">Name</label>
-                </div>
-                <!-- NAME -->
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="destination">
-                    <label for="floatingInput">Ziel</label>
-                </div>
-                <!-- PERIOD -->
-                <app-date-picker
-                    (startDatePicked)="this.tourForm.get('start')!.setValue($event.toLocaleDateString())"
-                    (endDatePicked)="this.tourForm.get('end')!.setValue($event.toLocaleDateString())"
-                ></app-date-picker>
-                <!-- PARTICIPANTS -->
-                <div class="form-floating mb-3">
-                    <input
-                    #input
-                    id="typeahead-prevent-manual-entry"
-                    type="text"
-                    placeholder="Teilnehmer wählen.."
-                    class="form-control"
-                    [ngbTypeahead]="searchParticipants"
-                    [inputFormatter]="getParticipantName"
-                    [resultFormatter]="getParticipantID"
-                    [editable]="false"
-                    (selectItem)="addParticipant($event)"
-                    />
-                    <label for="floatingInput">Teilnehmer hinzufügen</label>
-                </div>
-			</div>
-            @for (participant of newParticipants; track $index) {
-                <span class="badge text-bg-primary me-1 py-1">
-                    {{participantsMap[participant.id].name}}
-                    <!-- {{participantsMap[participant].name}} -->
-                    <i class="bi bi-x-circle" style="cursor: pointer;" (click)="removeParticipant(participant)"></i>
-                </span>
-            }
-		</form>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-outline-dark" (click)="newTour(); modal.close('Save click')">Speichern</button>
-	</div>
-
-    
-
-</ng-template>

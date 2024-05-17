@@ -87,7 +87,7 @@ export class PlannerParticipantsComponent {
             result = this.roundToTwoDecimals(dailyRation * weight)
         }
 
-        return `<b>${result}</b> kg ${thingName}`
+        return `<b>${thingName}</b> (${result}kg)`
         
     }
 
@@ -98,6 +98,15 @@ export class PlannerParticipantsComponent {
 			}
 		}
 		return false
+	}
+
+	participantIsLazy(participantID: number) {
+		for ( let thing of this.tourThings) {
+			if ( participantID == thing.carrier) {
+				return false
+			}
+		}
+		return true
 	}
 
 	removeTourParticipant(participantID: string) {
