@@ -45,7 +45,7 @@ export class RegisterComponent {
             console.log('registerGroup - success', response.message);
             this.authService.login()
             this.localStorage.setItem('key', response.key)
-            this.link = `${backendUrl}/${response.key}/`
+            this.link = `https://caiborga.github.io/mtc-frontend/browser/#/home/${response.key}/`
         })
         .catch((error) => {
             console.error('registerGroup - error', error);
