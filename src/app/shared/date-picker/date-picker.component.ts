@@ -34,7 +34,6 @@ export class DatePickerComponent {
 		if (!this.fromDate && !this.toDate) {
 			this.fromDate = date;
 			const fromDatePicked = new Date(date.year, date.month - 1, date.day);
-			debugger
 			this.startDatePicked.emit(fromDatePicked)
 		} else if (this.fromDate && !this.toDate && date && date.after(this.fromDate)) {
 			this.toDate = date;

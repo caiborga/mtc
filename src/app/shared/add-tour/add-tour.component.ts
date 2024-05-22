@@ -92,7 +92,7 @@ export class AddTourComponent {
     getParticipantID = (x: { name: string }) => x.name;
 
     editTour() {
-        debugger
+
         const data = {
             tourCars: JSON.stringify(this.tour.tourCars),
             tourData: JSON.stringify(this.tourForm.value),
@@ -111,7 +111,6 @@ export class AddTourComponent {
     }
 
     newTour() {
-        debugger
         const data = {
             tourCars: JSON.stringify([]),
             tourData: JSON.stringify(this.tourForm.value),
