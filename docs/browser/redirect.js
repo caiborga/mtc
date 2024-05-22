@@ -1,15 +1,11 @@
 (function() {
-    var baseHref = '/mtc-frontend/browser/';
-    var currentPath = window.location.pathname;
-  
-    if (!currentPath.startsWith(baseHref)) {
-      window.location.replace(baseHref);
-    } else {
-      var relativePath = currentPath.substring(baseHref.length);
-      if (relativePath) {
-        var newPath = baseHref + relativePath;
-        window.location.replace(newPath);
-      }
-    }
-  })();
-  
+  var baseHref = '/mtc-frontend/browser/';
+  var currentPath = window.location.pathname;
+  var indexPath = baseHref + 'index.html';
+
+  // Überprüfen, ob die aktuelle Seite die 404-Seite ist
+  if (currentPath !== indexPath && !currentPath.endsWith('/404.html')) {
+    var newPath = baseHref + '#' + currentPath.substring(baseHref.length);
+    window.location.replace(newPath);
+  }
+})();
