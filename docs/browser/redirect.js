@@ -1,9 +1,15 @@
 (function() {
+    var baseHref = '/mtc-frontend/browser/';
     var currentPath = window.location.pathname;
   
-    if (currentPath !== "/") {
-      var newPath = "/" + currentPath.split('/').slice(1).join('/');
-      window.location.replace(newPath);
+    if (!currentPath.startsWith(baseHref)) {
+      window.location.replace(baseHref);
+    } else {
+      var relativePath = currentPath.substring(baseHref.length);
+      if (relativePath) {
+        var newPath = baseHref + relativePath;
+        window.location.replace(newPath);
+      }
     }
   })();
   
