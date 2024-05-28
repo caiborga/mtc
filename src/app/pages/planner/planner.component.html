@@ -187,7 +187,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 mt-3 mb-3">
                             <google-map
                                 height="100%"
                                 width="100%"
@@ -254,7 +254,7 @@
     </ng-container>
 }
 
-<!-- OFFCANVAS MEALS -->
+<!-- OFFCANVAS MEALS /TODO/ -->
 <ng-template #content let-offcanvas>
 	<div class="offcanvas-header">
 		<h4 class="offcanvas-title" id="offcanvas-basic-title">Mahzeilten Übersicht</h4>
@@ -262,10 +262,6 @@
 	</div>
     @for (meal of meals; track meal; let i = $index;) {
         <!-- <div class="offcanvas-body">
-            
-                
-            
-            
             <div class="text-end">
                 <button type="button" class="btn btn-outline-dark" (click)="offcanvas.close('Save click')">Save</button>
             </div>
@@ -275,18 +271,18 @@
             class="card" 
             style="height: 35px;"
             >
-            <div>
-                <span style="cursor: pointer;" (click)="isCollapsed = !isCollapsed">{{meal.type}}</span>
+                <div>
+                    <span style="cursor: pointer;" (click)="isCollapsed = !isCollapsed">{{meal.type}}</span>
+                </div>
             </div>
-        </div>
-        <div>
-            <select class="form-select" aria-label="Default select example">
-                <option>Nicht zugewiesen</option>
-                @for (participant of participants; track participant){
-                    <option>{{participant}}</option>
-                }
-            </select>
-        </div>
+            <div>
+                <select class="form-select" aria-label="Default select example">
+                    <option>Nicht zugewiesen</option>
+                    @for (participant of participants; track participant){
+                        <option>{{participant}}</option>
+                    }
+                </select>
+            </div>
         </div>
         
     }

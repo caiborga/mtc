@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { backendUrl } from '../../../../environment';
-
 
 @Injectable({
     providedIn: 'root'
@@ -11,9 +10,7 @@ export class TourService {
 
     private apiUrl: string = backendUrl + '/api';
 
-    constructor(private httpClient: HttpClient) { }
-
-    // PARTICIPANTS
+    constructor(private httpClient: HttpClient) {}
 
     post(endpoint: string, data: any) {
         const url = `${this.apiUrl}/${endpoint}`;
@@ -34,5 +31,4 @@ export class TourService {
         const url = `${this.apiUrl}/${endpoint}`;
         return this.httpClient.delete(url);
     }
-
 }

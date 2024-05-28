@@ -77,10 +77,13 @@ export class CarsharingComponent {
         if (changes['tourCars']) {
             this.tourCars = changes['tourCars'].currentValue
         }
-        if (changes['tourParticipants']) {
+        if (changes['tourParticipants'] && !changes['tourParticipants'].firstChange) {
             this.tourParticipants = changes['tourParticipants'].currentValue
+            this.unassignedPassengers = []
+            for (let participant in this.tourParticipants) {
+                this.unassignedPassengers.push(this.tourParticipants[participant].id)
+            }
             this.getUnassignedParticipants()
-
         }
         if (changes['participantsMap']) {
             this.participantsMap = changes['participantsMap'].currentValue

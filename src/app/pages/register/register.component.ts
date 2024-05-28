@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TourService } from '../../core/services/tour.service';
 import { AuthService } from '../../core/services/auth-service.service';
@@ -6,6 +6,9 @@ import { LocalStorageService } from '../../core/services/local-storage.service';
 import { Router } from '@angular/router';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { backendUrl } from '../../../../environment';
+
+import { Message, MessageBoxComponent } from '../../shared/message-box/message-box.component';
+
 
 interface Response {
     message: string,
@@ -15,11 +18,14 @@ interface Response {
 @Component({
     selector: 'app-register',
     standalone: true,
-    imports: [FormsModule],
+    imports: [FormsModule, MessageBoxComponent],
     templateUrl: './register.component.html',
     styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+
+    @ViewChild(MessageBoxComponent) messageBox!: MessageBoxComponent
+
     name: string = ''
     link: string = ''
 
@@ -32,7 +38,13 @@ export class RegisterComponent {
     ) {}
 
     copyToClipboard() {
+        let message: Message = {
+            type: 'info',
+            message: `Link wurde in die Zwischenablage kopiert!`
+        }
         this.clipboard.copy(this.link);
+        this.messageBox.changeSuccessMessage(message);
+
     }
 
     registerGroup() {
