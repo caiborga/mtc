@@ -11,6 +11,7 @@
                 <!-- CATEGORY -->
                 @if (data.relevantColumns.category) {
                     <select class="form-select mb-3" style="height: 55px" formControlName="category">
+                        <option selected value="">Kategorie@if(thingForm.controls.category.invalid){<span class="text-danger">*</span>}</option>
                         <option value="food">Nahungsmittel</option>
                         <option value="consumables">Verbrauchsmaterial</option>
                         <option value="items">Gegenstände</option>
@@ -20,7 +21,7 @@
                 @if (data.relevantColumns.name) {
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
-                        <label for="floatingInput">Name</label>
+                        <label for="floatingInput">Name@if(thingForm.controls.name.invalid){<span class="text-danger">*</span>}</label>
                     </div>
                 }
                 <!-- UNIT -->
@@ -34,17 +35,41 @@
                 }
                 <!-- PERPERSON -->
                 @if (data.relevantColumns.perPerson) {
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson" (change)="setWeight()">
-                        <label for="floatingInput">Pro Kopf pro Tag</label>
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="perPerson" (change)="setWeight()">
+                            <label for="floatingInput">Pro Kopf pro Tag@if(thingForm.controls.perPerson.invalid){<span class="text-danger">*</span>}</label>
+                        </div>
+                        <span class="input-group-text">
+                            <i 
+                                class="ph ph-info" 
+                                ngbPopover="{{'Wie viel wird pro Kopf und Tag benötigt? Auf Basis dieser Angabe kann anhand der Anzahl Teilnehmender und Tagen die Gesamtmenge bestimmt werden. '}}"
+                                placement="end"
+                                popoverTitle="{{'Erläuterung'}}"
+                                style="cursor: pointer;"
+                                >
+                            </i>
+                        </span>
                     </div>
                 }
 
                 <!-- WEIGHT --> 
                 @if (data.relevantColumns.weight) {
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" formControlName="weight">
-                        <label for="floatingInput">Gewicht in kg</label>
+                    <div class="input-group mb-3">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" formControlName="weight">
+                            <label for="floatingInput">Gewicht in kg</label>
+                        </div>
+                        <span class="input-group-text">
+                            <i 
+                                class="ph ph-info" 
+                                ngbPopover="{{'Dieser Wert wird anhand der Pro-Kopf-pro-Tag Angabe automatisch ermittelt. Eine manuelle Anpassung ist möglich und sinnvoll, wenn die Dichte eines Stoffes sehr hoch oder niedrig ist. Ein Beispiel wäre Öl.'}}"
+                                placement="end"
+                                popoverTitle="{{'Erläuterung'}}"
+                                style="cursor: pointer;"
+                                >
+                            </i>
+                        </span>
                     </div>
                 }
 			</div>

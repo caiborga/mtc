@@ -16,11 +16,14 @@
                 <!-- NAME -->
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="name">
-                    <label for="floatingInput">Name</label>
+                    <label for="floatingInput">Name@if(tourForm.invalid){<span class="text-danger">*</span>}</label>
+                    @if(participantsMap.length == 0){
+                        <span class="text-danger ms-2" style="font-size: 12px;">Bisher wurden keine Teilnehmenden <a style="cursor: pointer;" routerLink="/participants" (click)="modal.dismiss()">erstellt</a></span>
+                    }
                 </div>
-                <!-- NAME -->
+                <!-- DESTINATION -->
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Name" formControlName="destination">
+                    <input type="email" class="form-control" id="floatingInput" placeholder="Ziel" formControlName="destination">
                     <label for="floatingInput">Ziel</label>
                 </div>
                 <!-- PERIOD -->
@@ -41,9 +44,14 @@
                         [inputFormatter]="getParticipantName"
                         [resultFormatter]="getParticipantID"
                         [editable]="false"
+                        [disabled]="participantsMap.length == 0"
                         (selectItem)="addParticipant($event)"
                         />
-                        <label for="floatingInput">Teilnehmer hinzufügen</label>
+                        <label for="floatingInput">Nach Teilnehmenden hier suchen</label>
+                        @if(participantsMap.length == 0){
+                            <span class="text-danger ms-2" style="font-size: 12px;">Bisher wurden keine Teilnehmenden <a style="cursor: pointer;" routerLink="/participants" (click)="modal.dismiss()">erstellt</a></span>
+                        }
+
                     </div>
                 }
 			</div>
@@ -57,7 +65,7 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		@if (!tour) {<button type="button" class="btn btn-outline-dark" (click)="newTour(); modal.close('Save click')">Speichern</button>}
-		@if (tour) {<button type="button" class="btn btn-outline-dark" (click)="editTour(); modal.close('Save click')">Ändern</button>}
+		@if (!tour) {<button type="button" class="btn btn-outline-dark" [disabled]="tourForm.invalid" (click)="newTour(); modal.close('Save click')">Speichern</button>}
+		@if (tour) {<button type="button" class="btn btn-outline-dark" [disabled]="tourForm.invalid" (click)="editTour(); modal.close('Save click')">Ändern</button>}
 	</div>
 </ng-template>

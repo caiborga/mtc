@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output, TemplateRef, } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
@@ -14,7 +15,7 @@ import { DatePickerComponent } from '../../shared/date-picker/date-picker.compon
 @Component({
     selector: 'app-add-tour',
     standalone: true,
-    imports: [CommonModule, DatePickerComponent, FormsModule, NgbTypeaheadModule, ReactiveFormsModule],
+    imports: [CommonModule, DatePickerComponent, FormsModule, NgbTypeaheadModule, ReactiveFormsModule, RouterLink],
     templateUrl: './add-tour.component.html',
     styleUrl: './add-tour.component.css'
 })

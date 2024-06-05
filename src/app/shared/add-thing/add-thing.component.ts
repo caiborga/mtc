@@ -1,6 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CategoryData } from '../../pages/things/things.component';
 import { TourService } from '../../core/services/tour.service';
@@ -10,7 +11,7 @@ import { foodUnits, Unit } from '../../core/models/units';
 @Component({
     selector: 'app-add-thing',
     standalone: true,
-    imports: [FormsModule, ReactiveFormsModule, UnitPickerComponent],
+    imports: [FormsModule, ReactiveFormsModule, NgbPopoverModule, UnitPickerComponent],
     templateUrl: './add-thing.component.html',
     styleUrl: './add-thing.component.css'
 })
@@ -31,7 +32,7 @@ export class AddThingComponent {
         name: new FormControl('', Validators.required),
         perPerson: new FormControl(null, [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]), 
         unit: new FormControl(0, Validators.required),
-        weight: new FormControl<number | null>(null, [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]),
+        weight: new FormControl<number | string | null>(null, [Validators.required, Validators.pattern(/^\d*\.?\d+$/)]),
     });
 
     thingsMap: any;
@@ -53,6 +54,7 @@ export class AddThingComponent {
             things: [],
             title: '',
         }
+        this.thingForm.controls.category.addValidators(Validators.required)
     }
 
     ngOnInit() {
@@ -77,7 +79,6 @@ export class AddThingComponent {
             this.thingsMap = this.data.things.reduce((obj, cur) => ({...obj, [cur.id]: cur}), {})
         }
     }
-    
 
     editThing() {
         this.tourService.put('things/'+ this.thingForm.value.id, this.thingForm.value)
@@ -111,7 +112,7 @@ export class AddThingComponent {
                 name: '',
                 perPerson: null, 
                 unit: null,
-                weight: 0,
+                weight: 'Wird automatisch berechnet',
             })
         }
     }
